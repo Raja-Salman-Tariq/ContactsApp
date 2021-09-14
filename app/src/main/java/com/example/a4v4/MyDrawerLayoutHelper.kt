@@ -20,6 +20,8 @@ class MyDrawerLayoutHelper(
     private val toolbar             :   Toolbar,
     ){
 
+    var selectedTitle   =   "Home"
+
     init {
         navigationView.setNavigationItemSelectedListener {
             it.isChecked = true
@@ -39,7 +41,8 @@ class MyDrawerLayoutHelper(
                     toolbar.setTitleTextColor(
                         ContextCompat.getColor(applicationContext, R.color.black_alt)
                     )
-                    mainActivity.homeFragment.getContacts(0)
+                    mainActivity.homeFragment?.getContacts(0)
+                    selectedTitle="Home"
                 }
                 R.id.nav_jazz -> {
                     actionBar?.title = "Jazz"
@@ -54,7 +57,8 @@ class MyDrawerLayoutHelper(
                     toolbar.setTitleTextColor(
                         ContextCompat.getColor(applicationContext, R.color.jazz_yellow)
                     )
-                    mainActivity.homeFragment.getContacts(ContactsModel.TYPE_JAZZ)
+                    mainActivity.homeFragment?.getContacts(ContactsModel.TYPE_JAZZ)
+                    selectedTitle="Jazz"
                 }
                 R.id.nav_telenor -> {
                     actionBar?.title = "Telenor"
@@ -69,7 +73,8 @@ class MyDrawerLayoutHelper(
                     toolbar.setTitleTextColor(
                         ContextCompat.getColor(applicationContext, R.color.black_alt)
                     )
-                    mainActivity.homeFragment.getContacts(ContactsModel.TYPE_TELENOR)
+                    mainActivity.homeFragment?.getContacts(ContactsModel.TYPE_TELENOR)
+                    selectedTitle="Telenor"
                 }
                 R.id.nav_ufone -> {
                     actionBar?.title = "Ufone"
@@ -84,7 +89,8 @@ class MyDrawerLayoutHelper(
                     toolbar.setTitleTextColor(
                         ContextCompat.getColor(applicationContext, R.color.black)
                     )
-                    mainActivity.homeFragment.getContacts(ContactsModel.TYPE_UFONE)
+                    mainActivity.homeFragment?.getContacts(ContactsModel.TYPE_UFONE)
+                    selectedTitle="Ufone"
                 }
                 R.id.nav_zong -> {
                     actionBar?.title = "Zong"
@@ -99,7 +105,8 @@ class MyDrawerLayoutHelper(
                     toolbar.setTitleTextColor(
                         ContextCompat.getColor(applicationContext, R.color.zong_purple)
                     )
-                    mainActivity.homeFragment.getContacts(ContactsModel.TYPE_ZONG)
+                    mainActivity.homeFragment?.getContacts(ContactsModel.TYPE_ZONG)
+                    selectedTitle="Zong"
                 }
                 R.id.nav_other -> {
                     actionBar?.title = "Other"
@@ -114,7 +121,8 @@ class MyDrawerLayoutHelper(
                     toolbar.setTitleTextColor(
                         ContextCompat.getColor(applicationContext, R.color.black_alt)
                     )
-                    mainActivity.homeFragment.getContacts(ContactsModel.TYPE_OTHER)
+                    mainActivity.homeFragment?.getContacts(ContactsModel.TYPE_OTHER)
+                    selectedTitle="Other"
                 }
             }
 

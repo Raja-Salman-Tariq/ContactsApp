@@ -1,10 +1,14 @@
 package com.example.a4v4.ui.home
 
+import android.Manifest
+import android.content.Context
+import android.content.pm.PackageManager
 import android.os.Bundle
 import android.util.Log
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
+import androidx.appcompat.widget.SearchView
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -14,10 +18,12 @@ import com.example.a4v4.R
 import com.example.a4v4.databinding.FragmentHomeBinding
 import com.example.a4v4.rv.MyRvAdapter
 import com.example.a4v4.application.MyApp
+import com.google.android.material.snackbar.Snackbar
 
-class HomeFragment : Fragment(R.layout.fragment_home) {
+
+class HomeFragment(val mainActivity: MainActivity) : Fragment(R.layout.fragment_home) {
     val homeViewModel           :   HomeViewModel           by  viewModels{
-    MyViewModelFactory((this.requireActivity().application as MyApp).repository)
+    MyViewModelFactory((this.requireActivity().application as MyApp).repository!!)
     }
     private var _binding                :   FragmentHomeBinding?    =   null
 
@@ -28,8 +34,12 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
     private lateinit var recyclerView   : RecyclerView
     lateinit var myRvAdapter    : MyRvAdapter
 
-
     /*--------------------------------------------------------------------------------------------*/
+
+//    override fun onCreate(savedInstanceState: Bundle?) {
+//        super.onCreate(savedInstanceState)
+//        getPermission(mainActivity)
+//    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -47,12 +57,12 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
 
     /*--------------------------------------------------------------------------------------------*/
 
-
     override fun onResume() {
         super.onResume()
         (requireActivity() as MainActivity).let{
             it.supportActionBar?.setHomeAsUpIndicator(R.drawable.hamburger_icon)
             it.supportActionBar?.setDisplayHomeAsUpEnabled(true)   //show back button
+            it.setActionBarTitle(it.myDrawer.selectedTitle)
         }
     }
 
@@ -63,17 +73,7 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
         recyclerView.adapter        =   myRvAdapter
 
         homeViewModel.data.observe(viewLifecycleOwner){
-                data    ->  run{
-            myRvAdapter.updateData(data)
-            homeViewModel.repo.run {
-                Log.d(
-                    "cachesizes",
-                    "all: :null= ${allContacts == null}, valNull= ${allContacts.value == null}, ${allContacts.value?.size} \n" +
-                            "u::null= ${ufoneContacts == null}, valNull= ${ufoneContacts.value == null}, ${ufoneContacts.value?.size}\n " +
-                            "jazz::null= ${jazzContacts == null}, valNull= ${jazzContacts.value == null}, ${jazzContacts.value?.size}\n"
-                )
-            }
-                }
+                data    ->  myRvAdapter.updateData(data)
         }
 
 
@@ -90,17 +90,36 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
 
     fun getContacts(type:Short){
         homeViewModel.getContacts(type).observe(viewLifecycleOwner){
-                data    ->  run{
-            myRvAdapter.updateData(data)
-            homeViewModel.repo.run {
-                Log.d(
-                    "cachesizes",
-                    "all: :null= ${allContacts == null}, valNull= ${allContacts.value == null}, ${allContacts.value?.size} \n" +
-                            "u::null= ${ufoneContacts == null}, valNull= ${ufoneContacts.value == null}, ${ufoneContacts.value?.size}\n " +
-                            "jazz::null= ${jazzContacts == null}, valNull= ${jazzContacts.value == null}, ${jazzContacts.value?.size}\n"
-                )
-            }
+                data    ->  myRvAdapter.updateData(data)
         }
+    }
+
+    private fun getPermission(mainActivity: MainActivity){
+        val permission: String = Manifest.permission.READ_CONTACTS
+        val grant = ContextCompat.checkSelfPermission(mainActivity, permission)
+        if (grant != PackageManager.PERMISSION_GRANTED) {
+            val permissionList = arrayOfNulls<String>(1)
+            permissionList[0] = permission
+            ActivityCompat.requestPermissions(mainActivity, permissionList, 1)
+        }
+    }
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int, permissions: Array<String?>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (requestCode == 1) {
+            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+
+            } else {
+                Snackbar
+                    .make((mainActivity).binding.root, "Please grant permission for contacts to use this app.", Snackbar.LENGTH_LONG)
+                    .setAction("Close App") {
+                        mainActivity.finish()
+                    }
+                    .show()
+            }
         }
     }
 }

@@ -1,10 +1,10 @@
 package com.example.a4v4.ui.details
 
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.util.Log
+import android.view.*
 import android.widget.TextView
+import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
 import com.example.a4v4.MainActivity
 import com.example.a4v4.R
@@ -41,7 +41,7 @@ class DetailsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        contact     =   (requireActivity().application as MyApp).repository.selectedContact!!
+        contact     =   (requireActivity().application as MyApp).repository?.selectedContact!!
 
         nameText    =   binding.fragDetailsNameText
         contactText =   binding.fragDetailsContactText
@@ -57,6 +57,24 @@ class DetailsFragment : Fragment() {
         address.text    =   contact.address
         org.text        =   contact.org
         jobtitle.text   =   contact.title
+
+        (requireActivity() as MainActivity).setActionBarTitle(
+            if (contact.name == "Unavailable") "Unnamed Contact" else contact.name
+        )
+
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setHasOptionsMenu(true)
+    }
+
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        menu?.findItem(R.id.menu_search)?.isVisible = false
+
+        Log.d("lemenew", "onCreateOptionsMenu: ")
+        super.onCreateOptionsMenu(menu, inflater!!)
     }
 
     override fun onResume() {
