@@ -19,7 +19,7 @@ class MainActivity : AppCompatActivity() {
     lateinit var binding            : ActivityMainBinding
 
 
-    private val homeFragment    =   HomeFragment()
+    val homeFragment    =   HomeFragment()
     private val detailsFragment    =   DetailsFragment()
 
     private lateinit var myDrawer: MyDrawerLayoutHelper
@@ -46,6 +46,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         myDrawer  = MyDrawerLayoutHelper(
+            this,
             binding.drawerLayout,
             binding.drawerNav,
             supportActionBar!!,
@@ -65,7 +66,7 @@ class MainActivity : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             R.id.export  -> {
-                FileHandler(this).createCSV((application as MyApp).repository.myContacts)
+                FileHandler(this).createCSV((application as MyApp).repository.allContacts.value)
                 true
             }
             R.id.home   ->  {

@@ -1,6 +1,7 @@
 package com.example.a4v4.rv
 
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.core.content.ContextCompat
@@ -51,12 +52,15 @@ class MyRvAdapter(
 
     override fun getItemCount() =   data.size
 
-    fun updateData(updData  :   List<DummyModel>?){
-        if (updData == null)
-            return
+    fun updateData(updData  :   List<DummyModel>) {
         data.clear()
-        @Suppress("UNCHECKED_CAST")
-        data.addAll(updData)
+        if (updData.isEmpty()) {
+            fragment.binding.emptyRvTxt.visibility  =   View.VISIBLE
+        }
+        else {
+            fragment.binding.emptyRvTxt.visibility = View.GONE
+            data.addAll(updData)
+        }
         notifyDataSetChanged()
     }
 }

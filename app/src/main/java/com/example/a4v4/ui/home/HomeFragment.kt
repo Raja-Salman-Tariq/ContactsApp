@@ -23,10 +23,10 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
 
     // This property is only valid between onCreateView and
     // onDestroyView.
-    private val binding get()           =   _binding!!
+    val binding get()           =   _binding!!
 
     private lateinit var recyclerView   : RecyclerView
-    private lateinit var myRvAdapter    : MyRvAdapter
+    lateinit var myRvAdapter    : MyRvAdapter
 
 
     /*--------------------------------------------------------------------------------------------*/
@@ -63,12 +63,17 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
         recyclerView.adapter        =   myRvAdapter
 
         homeViewModel.data.observe(viewLifecycleOwner){
-                data    ->
-            run {
-                myRvAdapter.updateData(data)
-                homeViewModel.repo.myContacts = data
-                    .apply { Log.d("myfilesdirx", "size of convort: $size") }
+                data    ->  run{
+            myRvAdapter.updateData(data)
+            homeViewModel.repo.run {
+                Log.d(
+                    "cachesizes",
+                    "all: :null= ${allContacts == null}, valNull= ${allContacts.value == null}, ${allContacts.value?.size} \n" +
+                            "u::null= ${ufoneContacts == null}, valNull= ${ufoneContacts.value == null}, ${ufoneContacts.value?.size}\n " +
+                            "jazz::null= ${jazzContacts == null}, valNull= ${jazzContacts.value == null}, ${jazzContacts.value?.size}\n"
+                )
             }
+                }
         }
 
 
@@ -79,5 +84,23 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+    /*--------------------------------------------------------------------------------------------*/
+
+    fun getContacts(type:Short){
+        homeViewModel.getContacts(type).observe(viewLifecycleOwner){
+                data    ->  run{
+            myRvAdapter.updateData(data)
+            homeViewModel.repo.run {
+                Log.d(
+                    "cachesizes",
+                    "all: :null= ${allContacts == null}, valNull= ${allContacts.value == null}, ${allContacts.value?.size} \n" +
+                            "u::null= ${ufoneContacts == null}, valNull= ${ufoneContacts.value == null}, ${ufoneContacts.value?.size}\n " +
+                            "jazz::null= ${jazzContacts == null}, valNull= ${jazzContacts.value == null}, ${jazzContacts.value?.size}\n"
+                )
+            }
+        }
+        }
     }
 }

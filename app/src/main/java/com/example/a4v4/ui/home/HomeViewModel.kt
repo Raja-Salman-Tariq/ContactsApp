@@ -8,13 +8,18 @@ import kotlinx.coroutines.launch
 
 class HomeViewModel(val repo: Repo) : ViewModel() {
 
-    val data    :   LiveData<List<DummyModel>> =   repo.getContacts()/*.asLiveData()*/
+    var data    :   LiveData<List<DummyModel>> =   repo.getContacts(0)/*.asLiveData()*/
 
 
     init {
         viewModelScope.launch(Dispatchers.IO) {
             repo.fetchContacts()
         }
+    }
+
+    fun getContacts(type:Short): LiveData<List<DummyModel>> {
+        data    =   repo.getContacts(type)
+        return data
     }
 
 }

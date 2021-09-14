@@ -17,12 +17,13 @@ import com.example.a4v4.database.DummyModel
 import com.google.android.material.navigation.NavigationView
 
 class MyDrawerLayoutHelper(
-    val drawerLayout        :   DrawerLayout,
-    val navigationView      :   NavigationView,
-    val actionBar           :   ActionBar,
-    val application         :   Application,
-    val applicationContext  :   Context,
-    val toolbar             :   Toolbar,
+    private val mainActivity        : MainActivity,
+    val drawerLayout                :   DrawerLayout,
+    private val navigationView      :   NavigationView,
+    private val actionBar           :   ActionBar,
+    val application                 :   Application,
+    private val applicationContext  :   Context,
+    private val toolbar             :   Toolbar,
     ){
 
     init {
@@ -44,7 +45,7 @@ class MyDrawerLayoutHelper(
                     toolbar.setTitleTextColor(
                         ContextCompat.getColor(applicationContext, R.color.black_alt)
                     )
-                    (application as MyApp).repository.setContacts(0)
+                    mainActivity.homeFragment.getContacts(0)
                 }
                 R.id.nav_jazz -> {
                     actionBar?.title = "Jazz"
@@ -59,7 +60,7 @@ class MyDrawerLayoutHelper(
                     toolbar.setTitleTextColor(
                         ContextCompat.getColor(applicationContext, R.color.jazz_yellow)
                     )
-                    (application as MyApp).repository.setContacts(DummyModel.TYPE_JAZZ)
+                    mainActivity.homeFragment.getContacts(DummyModel.TYPE_JAZZ)
                 }
                 R.id.nav_telenor -> {
                     actionBar?.title = "Telenor"
@@ -74,7 +75,7 @@ class MyDrawerLayoutHelper(
                     toolbar.setTitleTextColor(
                         ContextCompat.getColor(applicationContext, R.color.black_alt)
                     )
-                    (application as MyApp).repository.setContacts(DummyModel.TYPE_TELENOR)
+                    mainActivity.homeFragment.getContacts(DummyModel.TYPE_TELENOR)
                 }
                 R.id.nav_ufone -> {
                     actionBar?.title = "Ufone"
@@ -89,7 +90,7 @@ class MyDrawerLayoutHelper(
                     toolbar.setTitleTextColor(
                         ContextCompat.getColor(applicationContext, R.color.black)
                     )
-                    (application as MyApp).repository.setContacts(DummyModel.TYPE_UFONE)
+                    mainActivity.homeFragment.getContacts(DummyModel.TYPE_UFONE)
                 }
                 R.id.nav_zong -> {
                     actionBar?.title = "Zong"
@@ -104,7 +105,22 @@ class MyDrawerLayoutHelper(
                     toolbar.setTitleTextColor(
                         ContextCompat.getColor(applicationContext, R.color.zong_purple)
                     )
-                    (application as MyApp).repository.setContacts(DummyModel.TYPE_ZONG)
+                    mainActivity.homeFragment.getContacts(DummyModel.TYPE_ZONG)
+                }
+                R.id.nav_other -> {
+                    actionBar?.title = "Other"
+                    actionBar?.setBackgroundDrawable(
+                        ColorDrawable(
+                            ContextCompat.getColor(
+                                applicationContext,
+                                R.color.jazz_yellow
+                            )
+                        )
+                    )
+                    toolbar.setTitleTextColor(
+                        ContextCompat.getColor(applicationContext, R.color.black_alt)
+                    )
+                    mainActivity.homeFragment.getContacts(DummyModel.TYPE_OTHER)
                 }
             }
 

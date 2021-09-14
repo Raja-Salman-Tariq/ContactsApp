@@ -6,11 +6,9 @@ import android.provider.ContactsContract
 import android.util.Log
 import androidx.annotation.WorkerThread
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import com.example.assignment4.application.NetworkDiscerner
 import com.example.a4v4.database.ContactsDao
 import com.example.a4v4.database.DummyModel
-import kotlinx.coroutines.flow.Flow
+import com.example.assignment4.application.NetworkDiscerner
 
 
 class Repo(
@@ -19,18 +17,14 @@ class Repo(
     ) {
 
     val allContacts: LiveData<List<DummyModel>> = contactDao.getContacts()
-    var myContacts  = listOf<DummyModel>()
 
     var selectedContact : DummyModel? =   null
 
-    private var contactsToRet   =   MutableLiveData<List<DummyModel>>().apply { value = ArrayList()}
-
-    private val contacts        =   MutableLiveData<ArrayList<DummyModel>>().apply { value = ArrayList()}/*:   LiveData<List<DummyModel>>  =   contactDao.getAll()*/
-    private val ufoneContacts   =   MutableLiveData<ArrayList<DummyModel>>().apply { value = ArrayList()}
-    private val telenorContacts =   MutableLiveData<ArrayList<DummyModel>>().apply { value = ArrayList()}
-    private val zongContacts    =   MutableLiveData<ArrayList<DummyModel>>().apply { value = ArrayList()}
-    private val jazzContacts    =   MutableLiveData<ArrayList<DummyModel>>().apply { value = ArrayList()}
-    private val otherContacts   =   MutableLiveData<ArrayList<DummyModel>>().apply { value = ArrayList()}
+    val ufoneContacts: LiveData<List<DummyModel>>   =   contactDao.getContacts(DummyModel.TYPE_UFONE)   //MutableLiveData<ArrayList<DummyModel>>().apply { value = ArrayList()}
+    val telenorContacts: LiveData<List<DummyModel>> =   contactDao.getContacts(DummyModel.TYPE_TELENOR) //MutableLiveData<ArrayList<DummyModel>>().apply { value = ArrayList()}
+    val zongContacts: LiveData<List<DummyModel>>    =   contactDao.getContacts(DummyModel.TYPE_ZONG)    //MutableLiveData<ArrayList<DummyModel>>().apply { value = ArrayList()}
+    val jazzContacts: LiveData<List<DummyModel>>    =   contactDao.getContacts(DummyModel.TYPE_JAZZ)    //MutableLiveData<ArrayList<DummyModel>>().apply { value = ArrayList()}
+    val otherContacts: LiveData<List<DummyModel>>   =   contactDao.getContacts(DummyModel.TYPE_OTHER)   //MutableLiveData<ArrayList<DummyModel>>().apply { value = ArrayList()}
 
     var id: Long?               =   null
     var name: String?           =   null
@@ -41,27 +35,18 @@ class Repo(
     var title:String?           =   null
 
 
-    init {
-        setContacts(0)
-    }
-
-    fun getContacts()   =   contactsToRet as LiveData<List<DummyModel>>
-
-    fun setContacts(type    :   Short)    = when (type){
-        DummyModel.TYPE_ZONG    ->  contactsToRet.postValue(zongContacts.value)
-        DummyModel.TYPE_JAZZ    ->  contactsToRet.postValue(jazzContacts.value)
-        DummyModel.TYPE_TELENOR ->  contactsToRet.postValue(telenorContacts.value)
-        DummyModel.TYPE_UFONE   ->  contactsToRet.postValue(ufoneContacts.value)
-        DummyModel.TYPE_OTHER   ->  contactsToRet.postValue(otherContacts.value)
-        else                    ->  contactsToRet.postValue(allContacts.value)
+    fun getContacts(type:Short): LiveData<List<DummyModel>> {
+        return when(type){
+            DummyModel.TYPE_UFONE   ->  ufoneContacts
+            DummyModel.TYPE_JAZZ    ->  jazzContacts
+            DummyModel.TYPE_ZONG    ->  zongContacts
+            DummyModel.TYPE_TELENOR ->  telenorContacts
+            DummyModel.TYPE_OTHER   ->  otherContacts
+            else                    ->  allContacts
+        }
     }
 
     suspend fun fetchContacts(){
-//        if (contacts.value  ==  null){
-//            contacts.value  =   ArrayList()
-//        }
-
-//        contacts?.value?.clear()
 
         val cursor      = context.contentResolver.query(
             ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
@@ -73,28 +58,16 @@ class Repo(
 
         if (cursor?.count!!> 0) {
 
-//            val newContacts =   ArrayList<DummyModel>()
 
             var toAdd   : DummyModel
             while (cursor.moveToNext()) {
 
                 toAdd   =   buildContact(cursor)
-//                newContacts.add(toAdd)
-//                contacts?.value?.add(toAdd)
-//
-//                when (toAdd.type){
-//                    DummyModel.TYPE_OTHER   ->  otherContacts.value?.add(toAdd)
-//                    DummyModel.TYPE_JAZZ   ->  jazzContacts.value?.add(toAdd)
-//                    DummyModel.TYPE_UFONE   ->  ufoneContacts.value?.add(toAdd)
-//                    DummyModel.TYPE_ZONG   ->  zongContacts.value?.add(toAdd)
-//                    DummyModel.TYPE_TELENOR   ->  telenorContacts.value?.add(toAdd)
-//                }
                 contactDao.insert(toAdd)
             }
         }
 
         cursor?.close()
-        Log.d("xcrv", "fetched contacts: ${contacts?.value?.size}")
     }
 
     private fun buildContact(cursor: Cursor): DummyModel {

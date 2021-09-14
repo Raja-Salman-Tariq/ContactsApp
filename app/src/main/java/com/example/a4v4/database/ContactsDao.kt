@@ -14,6 +14,9 @@ interface ContactsDao {
     @Query("SELECT * FROM DummyModel")
     fun getContacts(): LiveData<List<DummyModel>>
 
+    @Query("SELECT * FROM DummyModel WHERE type = :type")
+    fun getContacts(type:Short): LiveData<List<DummyModel>>
+
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insert(contact: DummyModel)
 

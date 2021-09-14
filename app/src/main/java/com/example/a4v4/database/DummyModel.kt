@@ -49,15 +49,15 @@ class DummyModel(
 
 
 
-        Log.d("datastuv", ":\n" +
-                "idx=$idx\n" +
-                "name=$name\n  " +
-                "num=$number\n " +
-                "type=$type\n " +
-                "email=$email\n " +
-                "addr=$address\n " +
-                "orga=$org\n" +
-                "title=$title")
+//        Log.d("datastuv", ":\n" +
+//                "idx=$idx\n" +
+//                "name=$name\n  " +
+//                "num=$number\n " +
+//                "type=$type\n " +
+//                "email=$email\n " +
+//                "addr=$address\n " +
+//                "orga=$org\n" +
+//                "title=$title")
     }
 
     companion object{

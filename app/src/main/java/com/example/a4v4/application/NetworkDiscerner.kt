@@ -1,5 +1,6 @@
 package com.example.assignment4.application
 
+import android.util.Log
 import com.example.a4v4.database.DummyModel
 
 class NetworkDiscerner(contact  :   String?){
@@ -30,6 +31,8 @@ class NetworkDiscerner(contact  :   String?){
                         if (!isTelenor(substr))
                             type = DummyModel.TYPE_OTHER
         }
+
+        Log.d("nwdiscr", "contact: $contact, type:$type")
     }
 
     private fun isTelenor(substr: String): Boolean {
