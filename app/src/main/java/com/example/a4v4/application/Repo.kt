@@ -8,31 +8,32 @@ import androidx.annotation.WorkerThread
 import androidx.lifecycle.LiveData
 import com.example.a4v4.database.ContactsDao
 import com.example.a4v4.database.ContactsModel
-import com.example.assignment4.application.NetworkDiscerner
 
 
 class Repo(
     private val context: Context,
     private val contactDao: ContactsDao
     ) {
+    /*------------------------------ C O R E    V A R I A B L E S ---------------------------------*/
 
     val allContacts: LiveData<List<ContactsModel>> = contactDao.getContacts()
 
     var selectedContact : ContactsModel? =   null
 
-    val ufoneContacts: LiveData<List<ContactsModel>>   =   contactDao.getContacts(ContactsModel.TYPE_UFONE)   //MutableLiveData<ArrayList<ContactsModel>>().apply { value = ArrayList()}
-    val telenorContacts: LiveData<List<ContactsModel>> =   contactDao.getContacts(ContactsModel.TYPE_TELENOR) //MutableLiveData<ArrayList<ContactsModel>>().apply { value = ArrayList()}
-    val zongContacts: LiveData<List<ContactsModel>>    =   contactDao.getContacts(ContactsModel.TYPE_ZONG)    //MutableLiveData<ArrayList<ContactsModel>>().apply { value = ArrayList()}
-    val jazzContacts: LiveData<List<ContactsModel>>    =   contactDao.getContacts(ContactsModel.TYPE_JAZZ)    //MutableLiveData<ArrayList<ContactsModel>>().apply { value = ArrayList()}
-    val otherContacts: LiveData<List<ContactsModel>>   =   contactDao.getContacts(ContactsModel.TYPE_OTHER)   //MutableLiveData<ArrayList<ContactsModel>>().apply { value = ArrayList()}
+    private val ufoneContacts   : LiveData<List<ContactsModel>>     =   contactDao.getContacts(ContactsModel.TYPE_UFONE)
+    private val telenorContacts : LiveData<List<ContactsModel>>     =   contactDao.getContacts(ContactsModel.TYPE_TELENOR)
+    private val zongContacts    : LiveData<List<ContactsModel>>     =   contactDao.getContacts(ContactsModel.TYPE_ZONG)
+    private val jazzContacts    : LiveData<List<ContactsModel>>     =   contactDao.getContacts(ContactsModel.TYPE_JAZZ)
+    private val otherContacts   : LiveData<List<ContactsModel>>     =   contactDao.getContacts(ContactsModel.TYPE_OTHER)
 
-    var id: Long?               =   null
-    var name: String?           =   null
+    /*------------------------------ H E L P E R    V A R I A B L E S ---------------------------------*/
+    var id: Long?                       =   null
+    var name: String?                   =   null
     private var num: String?            =   null
     private var email: String?          =   null
     private var address:String?         =   null
     private var organization:String?    =   null
-    var title:String?           =   null
+    var title:String?                   =   null
 
 
     fun getContacts(type:Short): LiveData<List<ContactsModel>> {
@@ -57,8 +58,6 @@ class Repo(
         )
 
         if (cursor?.count!!> 0) {
-
-
             var toAdd   : ContactsModel
             while (cursor.moveToNext()) {
 
@@ -66,15 +65,15 @@ class Repo(
                 contactDao.insert(toAdd)
             }
         }
-
         cursor?.close()
     }
 
     private fun buildContact(cursor: Cursor): ContactsModel {
 
         Log.d("idx", "fetchContacts: ${cursor.getLong(cursor.getColumnIndexOrThrow("_id"))}")
-        id      =   cursor.getLong(cursor.getColumnIndexOrThrow("_id"))
-        name    =   cursor.getString(cursor?.getColumnIndexOrThrow(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME))
+//        sth(cursor)
+        id      =   cursor.getLong(cursor.getColumnIndexOrThrow(ContactsContract.Contacts._ID))
+        name    =   cursor.getString(cursor?.getColumnIndexOrThrow(ContactsContract.Contacts.DISPLAY_NAME))
         num     =   cursor.getString(cursor?.getColumnIndexOrThrow(ContactsContract.CommonDataKinds.Phone.NUMBER))
         email   =   cursor.getString(cursor?.getColumnIndexOrThrow(ContactsContract.CommonDataKinds.Email.DATA))
         address =   cursor.getString(cursor?.getColumnIndexOrThrow(ContactsContract.CommonDataKinds.StructuredPostal.DATA))
@@ -98,9 +97,31 @@ class Repo(
         )
     }
 
-    @Suppress("RedundantSuspendModifier")
-    @WorkerThread
-    suspend fun insert(contact: ContactsModel) {
-        contactDao.insert(contact)
-    }
+//    fun sth(cur: Cursor){
+//        id= cur.getLong(cur.getColumnIndexOrThrow(ContactsContract.Contacts._ID))
+//        name= cur.getString(cur.getColumnIndexOrThrow(ContactsContract.Contacts.DISPLAY_NAME))
+//        if ((cur.getColumnIndex(ContactsContract.Contacts.HAS_PHONE_NUMBER)) > 0) {
+//            val pCur: Cursor = context.contentResolver.query(
+//                ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
+//                null, ContactsContract.CommonDataKinds.Phone.CONTACT_ID
+//                        + " = ?", arrayOf(id.toString()), null
+//            )!!
+//            while (pCur.moveToNext()) {
+//                // Do something with phones
+//                num = pCur.getString(pCur.getColumnIndexOrThrow(ContactsContract.CommonDataKinds.Phone.NUMBER))
+//                val emailCur: Cursor = context.contentResolver.query(
+//                    ContactsContract.CommonDataKinds.Email.CONTENT_URI,
+//                    null,
+//                    ContactsContract.CommonDataKinds.Email.CONTACT_ID + " = ?",
+//                    arrayOf(id.toString()),
+//                    null
+//                )!!
+//                while (emailCur.moveToNext()) {
+//                    email =emailCur.getString(emailCur.getColumnIndexOrThrow(ContactsContract.CommonDataKinds.Email.DATA))
+//                }
+//                emailCur.close()
+//            }
+//            pCur.close()
+//        }
+//    }
 }

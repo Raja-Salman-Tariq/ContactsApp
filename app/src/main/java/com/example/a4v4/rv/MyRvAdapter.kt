@@ -1,6 +1,5 @@
 package com.example.a4v4.rv
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,9 +10,9 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.example.a4v4.MainActivity
 import com.example.a4v4.R
+import com.example.a4v4.database.ContactsModel
 import com.example.a4v4.databinding.RvContactLayoutBinding
 import com.example.a4v4.ui.home.HomeFragment
-import com.example.a4v4.database.ContactsModel
 import de.hdodenhof.circleimageview.CircleImageView
 
 class MyRvAdapter(
@@ -86,11 +85,17 @@ class MyRvAdapter(
                 return FilterResults().apply { values = dataFiltered }
             }
             override fun publishResults(constraint: CharSequence?, results: FilterResults?) {
-                dataFiltered = if (results?.values == null)
+                dataFiltered = if (results?.values == null) {
                     ArrayList()
-                else
+                }
+                else {
                     results.values as ArrayList<ContactsModel>
+                }
                 notifyDataSetChanged()
+                if (dataFiltered.isEmpty())
+                    fragment.binding.emptyRvTxt.visibility=View.VISIBLE
+                else
+                    fragment.binding.emptyRvTxt.visibility=View.INVISIBLE
             }
         }
     }

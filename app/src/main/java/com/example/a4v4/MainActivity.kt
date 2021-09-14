@@ -1,7 +1,6 @@
 package com.example.a4v4
 
 import android.os.Bundle
-import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
@@ -12,7 +11,7 @@ import com.example.a4v4.application.MyApp
 import com.example.a4v4.databinding.ActivityMainBinding
 import com.example.a4v4.ui.details.DetailsFragment
 import com.example.a4v4.ui.home.HomeFragment
-import com.example.assignment4.application.FileHandler
+import com.example.a4v4.application.FileHandler
 
 
 class MainActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
@@ -20,11 +19,16 @@ class MainActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
     lateinit var binding            : ActivityMainBinding
 
 
-    val homeFragment    =   HomeFragment()
+    /*lateinit*/ var homeFragment       :   HomeFragment    =   HomeFragment(this)
     private val detailsFragment    =   DetailsFragment()
 
-    private lateinit var myDrawer: MyDrawerLayoutHelper
+    lateinit var myDrawer: MyDrawerLayoutHelper
 
+
+//    override fun onResume() {
+//        super.onResume()
+//        homeFragment = HomeFragment(this)
+//    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -62,8 +66,9 @@ class MainActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
         // Inflate the menu; this adds items to the action bar if it is present.
         menuInflater.inflate(R.menu.main, menu)
 
-        (menu.findItem(R.id.menu_search).actionView as SearchView)
-            .setOnQueryTextListener(this)
+        (menu.findItem(R.id.menu_search).actionView as SearchView).apply {
+            setOnQueryTextListener(this@MainActivity)
+        }
 
         return true
     }
@@ -71,7 +76,7 @@ class MainActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             R.id.export  -> {
-                FileHandler(this).createCSV((application as MyApp).repository.allContacts.value)
+                FileHandler(this).createCSV((application as MyApp).repository?.allContacts?.value)
                 true
             }
             R.id.home   ->  {
@@ -113,4 +118,13 @@ class MainActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
         homeFragment.myRvAdapter.filter.filter(newText)
         return false
     }
+
+    fun setActionBarTitle(str:String){
+        binding.toolbar.apply {
+            title   =   str
+        }
+
+    }
+
+
 }

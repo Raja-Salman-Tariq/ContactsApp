@@ -1,4 +1,4 @@
-package com.example.assignment4.application
+package com.example.a4v4.application
 
 import android.util.Log
 import com.example.a4v4.database.ContactsModel
@@ -8,14 +8,11 @@ class NetworkDiscerner(contact  :   String?){
     var type    :   Short
 
     init{
-//        Log.d("discr", "djsdfkhfk: ")
 
         val str = if (contact== null)
             ""
         else Regex("[^0-9+]").replace(contact, "")
-//        if (str.length != contact.length){
-//            Log.d("discr", "${str.subSequence(0,2)}    :   $contact")
-//        }
+
 
         if (str.length>13 || str.length < 10)
             type    =   ContactsModel.TYPE_OTHER

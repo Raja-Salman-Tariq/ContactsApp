@@ -17,7 +17,7 @@
         android:textColor="@color/black_alt"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="No numbers available for this category"/>
+        android:text="No relevant numbers available to show"/>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/fragment_home_rv"

@@ -1,4 +1,4 @@
-package com.example.assignment4.application
+package com.example.a4v4.application
 
 import android.content.Context
 import android.content.Context.MODE_PRIVATE
@@ -14,7 +14,7 @@ class FileHandler(private val ctxt: Context) {
 
     init{
         try{
-            fos=ctxt.openFileOutput(FILE_NAME, MODE_PRIVATE)
+            fos =ctxt.openFileOutput(FILE_NAME, MODE_PRIVATE)
         }catch (e:  Exception){
             fos =   null
             e.printStackTrace()
