@@ -4,7 +4,7 @@ import android.content.Context
 import android.content.Context.MODE_PRIVATE
 import android.content.Intent
 import android.util.Log
-import com.example.a4v4.database.DummyModel
+import com.example.a4v4.database.ContactsModel
 import java.io.FileNotFoundException
 import java.io.FileOutputStream
 import java.io.IOException
@@ -39,7 +39,7 @@ class FileHandler(private val ctxt: Context) {
         }
     }
 
-    fun createCSV(contacts : List<DummyModel>?): Boolean {
+    fun createCSV(contacts : List<ContactsModel>?): Boolean {
 
         if (contacts == null) {
             Log.d("myfilesdirx", "null recvd: ")

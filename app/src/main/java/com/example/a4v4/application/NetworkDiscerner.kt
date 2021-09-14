@@ -1,7 +1,7 @@
 package com.example.assignment4.application
 
 import android.util.Log
-import com.example.a4v4.database.DummyModel
+import com.example.a4v4.database.ContactsModel
 
 class NetworkDiscerner(contact  :   String?){
 
@@ -18,18 +18,18 @@ class NetworkDiscerner(contact  :   String?){
 //        }
 
         if (str.length>13 || str.length < 10)
-            type    =   DummyModel.TYPE_OTHER
+            type    =   ContactsModel.TYPE_OTHER
 
         else {
             val substr = str.substring(0, 7)
 
-            type = DummyModel.TYPE_OTHER
+            type = ContactsModel.TYPE_OTHER
 
             if (!isUfone(substr))
                 if (!isJazz(substr))
                     if (!isZong(substr))
                         if (!isTelenor(substr))
-                            type = DummyModel.TYPE_OTHER
+                            type = ContactsModel.TYPE_OTHER
         }
 
         Log.d("nwdiscr", "contact: $contact, type:$type")
@@ -58,7 +58,7 @@ class NetworkDiscerner(contact  :   String?){
                         contains("+92348") ||
                         contains("+92349")
                 }){
-                type    =   DummyModel.TYPE_TELENOR
+                type    =   ContactsModel.TYPE_TELENOR
                 return true
             }
             return false
@@ -85,7 +85,7 @@ class NetworkDiscerner(contact  :   String?){
                     contains("+92317") ||
                     contains("+92318")
             }){
-            type    =   DummyModel.TYPE_ZONG
+            type    =   ContactsModel.TYPE_ZONG
             return true
         }
         return false
@@ -126,7 +126,7 @@ class NetworkDiscerner(contact  :   String?){
                     contains("+92323") ||
                     contains("+92324")
             }){
-            type    =   DummyModel.TYPE_JAZZ
+            type    =   ContactsModel.TYPE_JAZZ
             return true
         }
         return false
@@ -151,7 +151,7 @@ class NetworkDiscerner(contact  :   String?){
                     contains("+92336") ||
                     contains("+92337")
         }){
-            type    =   DummyModel.TYPE_UFONE
+            type    =   ContactsModel.TYPE_UFONE
             return true
         }
         return false

@@ -2,13 +2,13 @@ package com.example.a4v4.ui.home
 
 import androidx.lifecycle.*
 import com.example.a4v4.application.Repo
-import com.example.a4v4.database.DummyModel
+import com.example.a4v4.database.ContactsModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 class HomeViewModel(val repo: Repo) : ViewModel() {
 
-    var data    :   LiveData<List<DummyModel>> =   repo.getContacts(0)/*.asLiveData()*/
+    var data    :   LiveData<List<ContactsModel>> =   repo.getContacts(0)/*.asLiveData()*/
 
 
     init {
@@ -17,7 +17,7 @@ class HomeViewModel(val repo: Repo) : ViewModel() {
         }
     }
 
-    fun getContacts(type:Short): LiveData<List<DummyModel>> {
+    fun getContacts(type:Short): LiveData<List<ContactsModel>> {
         data    =   repo.getContacts(type)
         return data
     }

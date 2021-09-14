@@ -7,7 +7,7 @@ import android.util.Log
 import androidx.annotation.WorkerThread
 import androidx.lifecycle.LiveData
 import com.example.a4v4.database.ContactsDao
-import com.example.a4v4.database.DummyModel
+import com.example.a4v4.database.ContactsModel
 import com.example.assignment4.application.NetworkDiscerner
 
 
@@ -16,15 +16,15 @@ class Repo(
     private val contactDao: ContactsDao
     ) {
 
-    val allContacts: LiveData<List<DummyModel>> = contactDao.getContacts()
+    val allContacts: LiveData<List<ContactsModel>> = contactDao.getContacts()
 
-    var selectedContact : DummyModel? =   null
+    var selectedContact : ContactsModel? =   null
 
-    val ufoneContacts: LiveData<List<DummyModel>>   =   contactDao.getContacts(DummyModel.TYPE_UFONE)   //MutableLiveData<ArrayList<DummyModel>>().apply { value = ArrayList()}
-    val telenorContacts: LiveData<List<DummyModel>> =   contactDao.getContacts(DummyModel.TYPE_TELENOR) //MutableLiveData<ArrayList<DummyModel>>().apply { value = ArrayList()}
-    val zongContacts: LiveData<List<DummyModel>>    =   contactDao.getContacts(DummyModel.TYPE_ZONG)    //MutableLiveData<ArrayList<DummyModel>>().apply { value = ArrayList()}
-    val jazzContacts: LiveData<List<DummyModel>>    =   contactDao.getContacts(DummyModel.TYPE_JAZZ)    //MutableLiveData<ArrayList<DummyModel>>().apply { value = ArrayList()}
-    val otherContacts: LiveData<List<DummyModel>>   =   contactDao.getContacts(DummyModel.TYPE_OTHER)   //MutableLiveData<ArrayList<DummyModel>>().apply { value = ArrayList()}
+    val ufoneContacts: LiveData<List<ContactsModel>>   =   contactDao.getContacts(ContactsModel.TYPE_UFONE)   //MutableLiveData<ArrayList<ContactsModel>>().apply { value = ArrayList()}
+    val telenorContacts: LiveData<List<ContactsModel>> =   contactDao.getContacts(ContactsModel.TYPE_TELENOR) //MutableLiveData<ArrayList<ContactsModel>>().apply { value = ArrayList()}
+    val zongContacts: LiveData<List<ContactsModel>>    =   contactDao.getContacts(ContactsModel.TYPE_ZONG)    //MutableLiveData<ArrayList<ContactsModel>>().apply { value = ArrayList()}
+    val jazzContacts: LiveData<List<ContactsModel>>    =   contactDao.getContacts(ContactsModel.TYPE_JAZZ)    //MutableLiveData<ArrayList<ContactsModel>>().apply { value = ArrayList()}
+    val otherContacts: LiveData<List<ContactsModel>>   =   contactDao.getContacts(ContactsModel.TYPE_OTHER)   //MutableLiveData<ArrayList<ContactsModel>>().apply { value = ArrayList()}
 
     var id: Long?               =   null
     var name: String?           =   null
@@ -35,13 +35,13 @@ class Repo(
     var title:String?           =   null
 
 
-    fun getContacts(type:Short): LiveData<List<DummyModel>> {
+    fun getContacts(type:Short): LiveData<List<ContactsModel>> {
         return when(type){
-            DummyModel.TYPE_UFONE   ->  ufoneContacts
-            DummyModel.TYPE_JAZZ    ->  jazzContacts
-            DummyModel.TYPE_ZONG    ->  zongContacts
-            DummyModel.TYPE_TELENOR ->  telenorContacts
-            DummyModel.TYPE_OTHER   ->  otherContacts
+            ContactsModel.TYPE_UFONE   ->  ufoneContacts
+            ContactsModel.TYPE_JAZZ    ->  jazzContacts
+            ContactsModel.TYPE_ZONG    ->  zongContacts
+            ContactsModel.TYPE_TELENOR ->  telenorContacts
+            ContactsModel.TYPE_OTHER   ->  otherContacts
             else                    ->  allContacts
         }
     }
@@ -59,7 +59,7 @@ class Repo(
         if (cursor?.count!!> 0) {
 
 
-            var toAdd   : DummyModel
+            var toAdd   : ContactsModel
             while (cursor.moveToNext()) {
 
                 toAdd   =   buildContact(cursor)
@@ -70,7 +70,7 @@ class Repo(
         cursor?.close()
     }
 
-    private fun buildContact(cursor: Cursor): DummyModel {
+    private fun buildContact(cursor: Cursor): ContactsModel {
 
         Log.d("idx", "fetchContacts: ${cursor.getLong(cursor.getColumnIndexOrThrow("_id"))}")
         id      =   cursor.getLong(cursor.getColumnIndexOrThrow("_id"))
@@ -86,7 +86,7 @@ class Repo(
         }
         title   =   cursor.getString(cursor?.getColumnIndexOrThrow(ContactsContract.CommonDataKinds.Organization.TITLE))
 
-        return DummyModel(
+        return ContactsModel(
             id,
             name,
             num,
@@ -100,7 +100,7 @@ class Repo(
 
     @Suppress("RedundantSuspendModifier")
     @WorkerThread
-    suspend fun insert(contact: DummyModel) {
+    suspend fun insert(contact: ContactsModel) {
         contactDao.insert(contact)
     }
 }

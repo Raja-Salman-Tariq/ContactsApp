@@ -5,7 +5,7 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 
 @Entity
-class DummyModel(
+class ContactsModel(
     var idx     :   Long,
     var name    :   String,
     @PrimaryKey

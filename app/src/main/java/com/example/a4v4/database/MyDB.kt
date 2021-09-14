@@ -5,9 +5,9 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import com.example.a4v4.database.ContactsDao
-import com.example.a4v4.database.DummyModel
+import com.example.a4v4.database.ContactsModel
 
-@Database(entities = [DummyModel::class], version = 1, exportSchema = false)
+@Database(entities = [ContactsModel::class], version = 1, exportSchema = false)
 abstract class MyDB : RoomDatabase() {
 
     abstract fun contactsDao(): ContactsDao

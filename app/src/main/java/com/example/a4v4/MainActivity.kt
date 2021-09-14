@@ -5,6 +5,7 @@ import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.SearchView
 import androidx.core.content.ContextCompat
 import androidx.core.view.GravityCompat
 import com.example.a4v4.application.MyApp
@@ -14,7 +15,7 @@ import com.example.a4v4.ui.home.HomeFragment
 import com.example.assignment4.application.FileHandler
 
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
 
     lateinit var binding            : ActivityMainBinding
 
@@ -60,6 +61,10 @@ class MainActivity : AppCompatActivity() {
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         // Inflate the menu; this adds items to the action bar if it is present.
         menuInflater.inflate(R.menu.main, menu)
+
+        (menu.findItem(R.id.menu_search).actionView as SearchView)
+            .setOnQueryTextListener(this)
+
         return true
     }
 
@@ -71,7 +76,6 @@ class MainActivity : AppCompatActivity() {
             }
             R.id.home   ->  {
                 myDrawer.drawerLayout.openDrawer(GravityCompat.START)
-                Log.d("drawropen", "onOptionsItemSelected: ")
                 return true
             }
             else    -> super.onOptionsItemSelected(item)
@@ -82,7 +86,6 @@ class MainActivity : AppCompatActivity() {
 
         if (homeFragment.isVisible) {
             myDrawer.drawerLayout.openDrawer(GravityCompat.START)
-            Log.d("drawropen", "onOptionsItemSelected: ")
         }
         else {
             supportFragmentManager.beginTransaction().apply {
@@ -99,5 +102,15 @@ class MainActivity : AppCompatActivity() {
             addToBackStack(null)
             commit()
         }
+    }
+
+    override fun onQueryTextSubmit(query: String?): Boolean {
+        homeFragment.myRvAdapter.filter.filter(query)
+        return false
+    }
+
+    override fun onQueryTextChange(newText: String?): Boolean {
+        homeFragment.myRvAdapter.filter.filter(newText)
+        return false
     }
 }

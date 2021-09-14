@@ -10,7 +10,7 @@ import com.example.a4v4.MainActivity
 import com.example.a4v4.R
 import com.example.a4v4.databinding.FragmentDetailsBinding
 import com.example.a4v4.application.MyApp
-import com.example.a4v4.database.DummyModel
+import com.example.a4v4.database.ContactsModel
 
 class DetailsFragment : Fragment() {
 
@@ -25,7 +25,7 @@ class DetailsFragment : Fragment() {
     private lateinit var org            :   TextView
     private lateinit var jobtitle       :   TextView
 
-    private lateinit var contact        : DummyModel
+    private lateinit var contact        : ContactsModel
 
 
     override fun onCreateView(

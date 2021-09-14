@@ -5,21 +5,19 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import com.example.a4v4.database.DummyModel
-import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface ContactsDao {
 
-    @Query("SELECT * FROM DummyModel")
-    fun getContacts(): LiveData<List<DummyModel>>
+    @Query("SELECT * FROM ContactsModel")
+    fun getContacts(): LiveData<List<ContactsModel>>
 
-    @Query("SELECT * FROM DummyModel WHERE type = :type")
-    fun getContacts(type:Short): LiveData<List<DummyModel>>
+    @Query("SELECT * FROM ContactsModel WHERE type = :type")
+    fun getContacts(type:Short): LiveData<List<ContactsModel>>
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
-    suspend fun insert(contact: DummyModel)
+    suspend fun insert(contact: ContactsModel)
 
-    @Query("DELETE FROM DummyModel")
+    @Query("DELETE FROM ContactsModel")
     suspend fun deleteAll()
 }
