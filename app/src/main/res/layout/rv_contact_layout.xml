@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="15dp"
+    >
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/rv_contact_img"
+        android:layout_width="55dp"
+        android:layout_height="55dp"
+        android:layout_marginVertical="15dp"
+        android:scaleX="1.25"
+        android:scaleY="1.25"
+        android:src="@drawable/icon_place_holder"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginLeft="15dp"
+        />
+
+    <TextView
+        android:id="@+id/rv_contact_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Name..."
+        android:textColor="@color/black_alt"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:layout_marginLeft="25dp"
+        app:layout_constraintStart_toEndOf="@+id/rv_contact_img"
+        app:layout_constraintTop_toTopOf="@+id/rv_contact_img" />
+
+    <TextView
+        android:id="@+id/rv_contact_number"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Number..."
+        android:textColor="@color/black_alt"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="@+id/rv_contact_name"
+        app:layout_constraintTop_toBottomOf="@+id/rv_contact_name" />
+
+    <View
+        android:id="@+id/rv_contact_divider"
+        android:layout_width="0dp"
+        android:layout_height="2dp"
+        android:layout_marginRight="5dp"
+        android:layout_marginVertical="15dp"
+        android:background="@color/teal_700"
+        app:layout_constraintStart_toStartOf="@+id/rv_contact_number"
+        app:layout_constraintTop_toBottomOf="@+id/rv_contact_number"
+        app:layout_constraintEnd_toEndOf="parent"
+        />
+</androidx.constraintlayout.widget.ConstraintLayout>
