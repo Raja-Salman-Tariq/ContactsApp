@@ -6,11 +6,14 @@ import android.view.*
 import android.widget.TextView
 import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
+import com.bumptech.glide.Glide
+import com.bumptech.glide.request.RequestOptions
 import com.example.a4v4.MainActivity
 import com.example.a4v4.R
 import com.example.a4v4.databinding.FragmentDetailsBinding
 import com.example.a4v4.application.MyApp
 import com.example.a4v4.database.ContactsModel
+import de.hdodenhof.circleimageview.CircleImageView
 
 class DetailsFragment : Fragment() {
 
@@ -18,6 +21,7 @@ class DetailsFragment : Fragment() {
     private val binding get()           =   _binding!!
 
 
+    private lateinit var img            :   CircleImageView
     private lateinit var nameText       :   TextView
     private lateinit var contactText    :   TextView
     private lateinit var emailText      :   TextView
@@ -43,6 +47,7 @@ class DetailsFragment : Fragment() {
 
         contact     =   (requireActivity().application as MyApp).repository?.selectedContact!!
 
+        img         =   binding.fragDetailsImg
         nameText    =   binding.fragDetailsNameText
         contactText =   binding.fragDetailsContactText
         emailText   =   binding.fragDetailsEmailText
@@ -51,6 +56,7 @@ class DetailsFragment : Fragment() {
         jobtitle    =   binding.fragDetailsJobTitleText
 
 
+        contact.retrieveContactPhoto(requireContext()).let { if (it!=null) img.setImageBitmap(it) }
         nameText.text   =   contact.name
         contactText.text=   contact.number
         emailText.text  =   contact.email

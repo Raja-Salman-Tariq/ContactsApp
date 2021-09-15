@@ -8,6 +8,7 @@ import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import com.example.a4v4.database.ContactsModel
+import com.example.a4v4.ui.apps.AppsFragment
 import com.google.android.material.navigation.NavigationView
 
 class MyDrawerLayoutHelper(
@@ -123,6 +124,25 @@ class MyDrawerLayoutHelper(
                     )
                     mainActivity.homeFragment?.getContacts(ContactsModel.TYPE_OTHER)
                     selectedTitle="Other"
+                }
+                R.id.nav_apps   ->  {
+                    actionBar?.title = "Apps"
+                    actionBar?.setBackgroundDrawable(
+                        ColorDrawable(
+                            ContextCompat.getColor(
+                                applicationContext,
+                                R.color.jazz_red
+                            )
+                        )
+                    )
+                    toolbar.setTitleTextColor(
+                        ContextCompat.getColor(applicationContext, R.color.jazz_yellow)
+                    )
+                    mainActivity.supportFragmentManager.beginTransaction().apply {
+                        replace(R.id.frag_container, AppsFragment(mainActivity))
+                        addToBackStack(null)
+                        commit()
+                    }
                 }
             }
 

@@ -3,6 +3,22 @@ package com.example.a4v4.database
 import android.util.Log
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import android.graphics.BitmapFactory
+
+import android.provider.ContactsContract
+
+import android.content.ContentUris
+
+import android.graphics.Bitmap
+
+import android.content.ContentResolver
+import android.content.Context
+import android.database.Cursor
+import android.net.Uri
+import com.example.a4v4.R
+import java.io.IOException
+import java.io.InputStream
+
 
 @Entity
 class ContactsModel(
@@ -14,7 +30,8 @@ class ContactsModel(
     var email   :   String,
     var address :   String,
     var org     :   String,
-    var title   :   String
+    var title   :   String,
+    var hasImg  :   Boolean =   false
 ){
 
     constructor(
@@ -25,7 +42,8 @@ class ContactsModel(
         email: String?,
         address: String?,
         org: String?,
-        title: String?
+        title: String?,
+        hasImg: Boolean?
     ): this(
         getVal(idx),
         getVal(name),
@@ -34,7 +52,8 @@ class ContactsModel(
         getVal(email),
         getVal(address),
         getVal(org),
-        getVal(title)
+        getVal(title),
+        hasImg?:false
     )
 
 
@@ -49,15 +68,15 @@ class ContactsModel(
 
 
 
-//        Log.d("datastuv", ":\n" +
-//                "idx=$idx\n" +
-//                "name=$name\n  " +
-//                "num=$number\n " +
-//                "type=$type\n " +
-//                "email=$email\n " +
-//                "addr=$address\n " +
-//                "orga=$org\n" +
-//                "title=$title")
+        Log.d("datastuv", ":\n" +
+                "idx=$idx\n" +
+                "name=$name\n  " +
+                "num=$number\n " +
+                "type=$type\n " +
+                "email=$email\n " +
+                "addr=$address\n " +
+                "orga=$org\n" +
+                "title=$title")
     }
 
     companion object{
@@ -77,4 +96,27 @@ class ContactsModel(
     }
 
 
+    fun retrieveContactPhoto(context: Context): Bitmap? {
+        var photo = BitmapFactory.decodeResource(
+            context.resources,
+            R.drawable.icon_place_holder
+        )
+        try {
+            if (idx.toInt() != -1) {
+                val inputStream: InputStream? =
+                    ContactsContract.Contacts.openContactPhotoInputStream(
+                        context.contentResolver,
+                        ContentUris.withAppendedId(ContactsContract.Contacts.CONTENT_URI, idx)
+                    )
+                if (inputStream != null) {
+                    photo = BitmapFactory.decodeStream(inputStream)
+                    inputStream?.close()
+                } else return null
+            } else return null
+            return photo
+        } catch (e: IOException) {
+            e.printStackTrace()
+            return null
+        }
+    }
 }

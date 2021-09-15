@@ -1,5 +1,6 @@
 package com.example.a4v4.rv
 
+import android.graphics.drawable.BitmapDrawable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -43,7 +44,8 @@ class MyRvAdapter(
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
         val myData              =   dataFiltered[position]
 
-        holder.imgId.background =   ContextCompat.getDrawable(fragment.requireContext(), R.drawable.icon_place_holder )
+        myData.retrieveContactPhoto(fragment.requireContext()).let{ if (it!=null) holder.imgId.setImageBitmap(it) }
+
         holder.name.text        =   myData.name
         holder.number.text      =   myData.number
 

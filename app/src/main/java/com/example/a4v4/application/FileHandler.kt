@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Context.MODE_PRIVATE
 import android.content.Intent
 import android.util.Log
+import androidx.core.content.FileProvider
 import com.example.a4v4.database.ContactsModel
 import java.io.FileNotFoundException
 import java.io.FileOutputStream
@@ -59,7 +60,7 @@ class FileHandler(private val ctxt: Context) {
 
             val shareIntent: Intent = Intent().apply {
                 action = Intent.ACTION_SEND
-                putExtra(Intent.EXTRA_STREAM, ctxt.getFileStreamPath(FILE_NAME))
+                putExtra(Intent.EXTRA_STREAM, FileProvider.getUriForFile(ctxt, "com.example.a4v4..fileprovider", ctxt.getFileStreamPath(FILE_NAME)))
                 type = "text/csv"
             }
             ctxt.startActivity(Intent.createChooser(shareIntent, "Send through..."))
