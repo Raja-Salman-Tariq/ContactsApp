@@ -1,23 +1,22 @@
 package com.example.a4v4.application
 
 import android.content.Context
-import android.content.pm.ApplicationInfo
+import android.content.pm.PackageInfo
 import android.database.Cursor
 import android.provider.ContactsContract
-import android.util.Log
-import androidx.annotation.WorkerThread
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import com.example.a4v4.database.ContactsDao
 import com.example.a4v4.database.ContactsModel
-import android.content.pm.PackageManager
-
-
-
+import com.example.a4v4.database.MyFiles
+import com.example.a4v4.database.MyFilesDao
+import com.example.a4v4.utils.NetworkDiscerner
 
 
 class Repo(
     private val context: Context,
-    private val contactDao: ContactsDao
+    private val contactDao: ContactsDao,
+    private val myFilesDao: MyFilesDao,
     ) {
     /*------------------------------ C O R E    V A R I A B L E S ---------------------------------*/
 
@@ -31,7 +30,8 @@ class Repo(
     private val jazzContacts    : LiveData<List<ContactsModel>>     =   contactDao.getContacts(ContactsModel.TYPE_JAZZ)
     private val otherContacts   : LiveData<List<ContactsModel>>     =   contactDao.getContacts(ContactsModel.TYPE_OTHER)
 
-    val myApps          =   ArrayList<ApplicationInfo>()
+    private val myApps          =   MutableLiveData<ArrayList<PackageInfo>>().apply { value=ArrayList() }
+    private val myFiles         :   LiveData<List<MyFiles>> =   myFilesDao.getFiles()
 
     /*------------------------------ H E L P E R    V A R I A B L E S ---------------------------------*/
     var id: Long?                       =   null
@@ -42,6 +42,12 @@ class Repo(
     private var organization:String?    =   null
     var title:String?                   =   null
 
+
+    fun getApps()   =   myApps as LiveData<ArrayList<PackageInfo>>
+
+    fun getFiles()  =   myFiles
+
+    suspend fun insertFile(myFile:MyFiles)    =   myFilesDao.insert(myFile)
 
     fun getContacts(type:Short): LiveData<List<ContactsModel>> {
         return when(type){
@@ -86,7 +92,7 @@ class Repo(
         organization    =   acquireOrganizations(id.toString())//acquireOrganizations(id.toString())//cursor.getString(cursor.getColumnIndexOrThrow(ContactsContract.CommonDataKinds.Organization.DISPLAY_NAME))
         title           =   acquireTitle(id.toString())//acquireTitles(id.toString())//cursor.getString(cursor?.getColumnIndexOrThrow(ContactsContract.CommonDataKinds.Organization.TITLE))
 
-        Log.d("idx", "fetchContacts: {id:${id}}-{name:$name}-{num:$num}-{email:$email}-{addr:$address}-{orga:$organization}")
+        //Log.d("idx", "fetchContacts: {id:${id}}-{name:$name}-{num:$num}-{email:$email}-{addr:$address}-{orga:$organization}")
 
         return ContactsModel(
             id,
@@ -190,6 +196,32 @@ class Repo(
     }
 
     fun fetchApps() {
-        myApps.addAll(context.packageManager.getInstalledApplications(PackageManager.GET_META_DATA))
+
+        val arrayOfAppInfo =
+            context.packageManager.getInstalledPackages(0)
+
+//        for (app in arrayOfAppInfo)
+//            when {
+//                app.applicationInfo.flags!=null && ApplicationInfo.FLAG_UPDATED_SYSTEM_APP !== 0 -> {
+//                    myApps.add(app)
+//                }
+//                app.applicationInfo.flags!=null && ApplicationInfo.FLAG_SYSTEM !== 0 -> {
+//                    //Discard
+//                }
+//                else -> {
+////                    myApps.add(app)
+//                }
+//            }
+
+//        for (app   in  arrayOfAppInfo)
+//            if (!(app.applicationInfo.flags!=null && ApplicationInfo.FLAG_SYSTEM!=null))
+//                myApps.add(app)
+
+        arrayOfAppInfo.sortWith(compareBy { it.applicationInfo.loadLabel(context.packageManager).toString()})
+        myApps.postValue(arrayOfAppInfo as ArrayList<PackageInfo>)
+    }
+
+    fun fetchFiles(){
+        val arrayOfFiles    =   arrayListOf<MyFiles>()
     }
 }

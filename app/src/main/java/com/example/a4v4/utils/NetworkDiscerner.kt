@@ -1,6 +1,5 @@
-package com.example.a4v4.application
+package com.example.a4v4.utils
 
-import android.util.Log
 import com.example.a4v4.database.ContactsModel
 
 class NetworkDiscerner(contact  :   String?){
@@ -29,7 +28,7 @@ class NetworkDiscerner(contact  :   String?){
                             type = ContactsModel.TYPE_OTHER
         }
 
-        Log.d("nwdiscr", "contact: $contact, type:$type")
+        //Log.d("nwdiscr", "contact: $contact, type:$type")
     }
 
     private fun isTelenor(substr: String): Boolean {

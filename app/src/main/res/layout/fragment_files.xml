@@ -5,11 +5,11 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="5dp"
-    tools:context=".ui.apps.AppsFragment"
+    tools:context=".ui.files.FilesFragment"
     >
 
     <TextView
-        android:id="@+id/emptyRvAppsTxt"
+        android:id="@+id/emptyRvFilesTxt"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -20,7 +20,7 @@
         android:text="No relevant entries available to show"/>
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/fragment_apps_rv"
+        android:id="@+id/fragment_files_rv"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layout_constraintTop_toTopOf="parent"

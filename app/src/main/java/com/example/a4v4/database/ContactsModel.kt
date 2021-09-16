@@ -68,7 +68,7 @@ class ContactsModel(
 
 
 
-        Log.d("datastuv", ":\n" +
+        /*Log.d("datastuv", ":\n" +
                 "idx=$idx\n" +
                 "name=$name\n  " +
                 "num=$number\n " +
@@ -76,7 +76,7 @@ class ContactsModel(
                 "email=$email\n " +
                 "addr=$address\n " +
                 "orga=$org\n" +
-                "title=$title")
+                "title=$title")*/
     }
 
     companion object{

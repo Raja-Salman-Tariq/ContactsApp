@@ -127,17 +127,17 @@ class MyDrawerLayoutHelper(
                 }
                 R.id.nav_apps   ->  {
                     actionBar?.title = "Apps"
-                    actionBar?.setBackgroundDrawable(
-                        ColorDrawable(
-                            ContextCompat.getColor(
-                                applicationContext,
-                                R.color.jazz_red
-                            )
-                        )
-                    )
-                    toolbar.setTitleTextColor(
-                        ContextCompat.getColor(applicationContext, R.color.jazz_yellow)
-                    )
+//                    actionBar?.setBackgroundDrawable(
+//                        ColorDrawable(
+//                            ContextCompat.getColor(
+//                                applicationContext,
+//                                R.color.jazz_red
+//                            )
+//                        )
+//                    )
+//                    toolbar.setTitleTextColor(
+//                        ContextCompat.getColor(applicationContext, R.color.jazz_yellow)
+//                    )
                     mainActivity.supportFragmentManager.beginTransaction().apply {
                         replace(R.id.frag_container, AppsFragment(mainActivity))
                         addToBackStack(null)

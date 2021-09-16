@@ -79,7 +79,7 @@ class DetailsFragment : Fragment() {
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         menu?.findItem(R.id.menu_search)?.isVisible = false
 
-        Log.d("lemenew", "onCreateOptionsMenu: ")
+        //Log.d("lemenew", "onCreateOptionsMenu: ")
         super.onCreateOptionsMenu(menu, inflater!!)
     }
 

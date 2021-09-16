@@ -1,9 +1,12 @@
 package com.example.a4v4.rv
 
 import android.content.pm.ApplicationInfo
+import android.content.pm.PackageInfo
+import android.graphics.drawable.Drawable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.a4v4.databinding.RvAppsLayoutBinding
@@ -11,13 +14,14 @@ import com.example.a4v4.ui.apps.AppsFragment
 
 class MyAppsRvAdapter(
     private val fragment    :   AppsFragment,
-    private val data        :   ArrayList<ApplicationInfo>,
+    private val data        :   ArrayList<PackageInfo>,
 //    private var dataFiltered:   ArrayList<ContactsModel> =   ArrayList(),
 )   :   RecyclerView.Adapter<MyAppsRvAdapter.MyViewHolder>()//, Filterable
 {
     class MyViewHolder(
         private val binding : RvAppsLayoutBinding,
         val name            :   TextView            =   binding.rvAppName,
+        val img             :   ImageView           =   binding.rvAppImg,
     )   : RecyclerView.ViewHolder(binding.root)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
@@ -36,13 +40,20 @@ class MyAppsRvAdapter(
         val myData              =   data[position]
 //        val myData              =   dataFiltered[position]
 
-        holder.name.text        =   myData.name+" *** "+myData.packageName
+        var appIcon             :   Drawable?   =   null
 
+//        fragment.requireContext().packageManager.apply{
+//            holder.name.text        =   getApplicationLabel(myData)
+//            appIcon                 =   getApplicationIcon(myData)
+//        }
+
+        holder.name.text        =   myData.applicationInfo.loadLabel(fragment.requireContext().packageManager)
+        holder.img.setImageDrawable(myData.applicationInfo.loadIcon(fragment.requireContext().packageManager))
     }
 
     override fun getItemCount() =   data.size//dataFiltered.size
 
-    fun updateData(updData  :   List<ApplicationInfo>) {
+    fun updateData(updData  :   List<PackageInfo>) {
         data.clear()
 //        dataFiltered.clear()
         if (updData.isEmpty()) {
