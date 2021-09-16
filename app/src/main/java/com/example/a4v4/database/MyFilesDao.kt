@@ -11,6 +11,6 @@ interface MyFilesDao {
     @Insert()
     suspend fun insert(file: MyFiles)
 
-    @Query("SELECT * FROM MyFiles")
+    @Query("SELECT * FROM MyFiles ORDER BY timestamp DESC")
     fun getFiles(): LiveData<List<MyFiles>>
 }

@@ -1,5 +1,6 @@
 package com.example.a4v4.ui.home
 
+import android.util.Log
 import androidx.lifecycle.*
 import com.example.a4v4.application.Repo
 import com.example.a4v4.database.ContactsModel
@@ -12,6 +13,7 @@ class HomeViewModel(val repo: Repo) : ViewModel() {
 
 
     init {
+        Log.d("sharedpref", "fetchContacts: ")
         viewModelScope.launch(Dispatchers.IO) {
             repo.fetchContacts()
         }

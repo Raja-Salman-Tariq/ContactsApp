@@ -1,11 +1,14 @@
 package com.example.a4v4
 
 import android.Manifest
+import android.content.Context
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
+import android.view.ViewGroup
+import android.view.inputmethod.InputMethodManager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
 import androidx.core.app.ActivityCompat
@@ -76,7 +79,6 @@ class MainActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
         (menu.findItem(R.id.menu_search).actionView as SearchView).apply {
             setOnQueryTextListener(this@MainActivity)
         }
-
         return true
     }
 
@@ -90,17 +92,24 @@ class MainActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
                         }
                     }
                 }
+                (getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager)
+                    ?.hideSoftInputFromWindow(findViewById<ViewGroup>(android.R.id.content).rootView.windowToken, 0)
                 true
             }
             R.id.home   ->  {
                 myDrawer.drawerLayout.openDrawer(GravityCompat.START)
+                (getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager)
+                    ?.hideSoftInputFromWindow(findViewById<ViewGroup>(android.R.id.content).rootView.windowToken, 0)
                 return true
             }
             R.id.history    ->  {
+                setActionBarTitle("History")
                 supportFragmentManager.beginTransaction().apply {
                     replace(R.id.frag_container, FilesFragment(this@MainActivity)!!)
                     commit()
                 }
+                (getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager)
+                    ?.hideSoftInputFromWindow(findViewById<ViewGroup>(android.R.id.content).rootView.windowToken, 0)
                 return true
             }
             else    -> super.onOptionsItemSelected(item)
@@ -111,6 +120,8 @@ class MainActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
 
         if (homeFragment?.isVisible!!) {
             myDrawer.drawerLayout.openDrawer(GravityCompat.START)
+            (getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager)
+                ?.hideSoftInputFromWindow(findViewById<ViewGroup>(android.R.id.content).rootView.windowToken, 0)
         }
         else {
             supportFragmentManager.beginTransaction().apply {

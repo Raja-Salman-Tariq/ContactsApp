@@ -1,13 +1,16 @@
 package com.example.a4v4.rv
 
+import android.content.Context
 import android.graphics.drawable.BitmapDrawable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.InputMethodManager
 import android.widget.Filter
 import android.widget.Filterable
 import android.widget.TextView
 import androidx.core.content.ContextCompat
+import androidx.core.content.ContextCompat.getSystemService
 import androidx.recyclerview.widget.RecyclerView
 import com.example.a4v4.MainActivity
 import com.example.a4v4.R
@@ -51,7 +54,14 @@ class MyRvAdapter(
 
         holder.itemView.setOnClickListener {
             fragment.homeViewModel.repo.selectedContact =   dataFiltered[position]
-            (fragment.requireActivity() as MainActivity).openDetailsFragment()
+            (fragment.requireActivity() as MainActivity).run {
+                openDetailsFragment()
+                (getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager)
+                    ?.hideSoftInputFromWindow(
+                        findViewById<ViewGroup>(android.R.id.content).rootView.windowToken,
+                        0
+                    )
+            }
         }
     }
 
