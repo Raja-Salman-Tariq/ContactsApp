@@ -24,6 +24,7 @@ class MyDrawerLayoutHelper(
     var selectedTitle   =   "Home"
 
     init {
+        navigationView.itemIconTintList = null;
         navigationView.setNavigationItemSelectedListener {
             it.isChecked = true
             drawerLayout.closeDrawers()

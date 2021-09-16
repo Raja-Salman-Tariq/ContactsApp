@@ -70,7 +70,7 @@ class FileHandler(private val ctxt: Context) {
             val shareIntent: Intent = Intent().apply {
                 action = Intent.ACTION_SEND
                 putExtra(Intent.EXTRA_STREAM, FileProvider.getUriForFile(ctxt, "com.example.a4v4..fileprovider", ctxt.getFileStreamPath(
-                    FILE_NAME
+                    FILE_NAME+"_$myTs"
                 )))
                 type = "text/csv"
             }
