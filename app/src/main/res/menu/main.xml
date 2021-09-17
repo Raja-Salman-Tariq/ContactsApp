@@ -11,13 +11,19 @@
 
     <item
         android:id="@+id/export"
-        android:orderInCategory="100"
         android:title="Export Contacts"
         app:showAsAction="collapseActionView" />
 
     <item
         android:id="@+id/history"
-        android:orderInCategory="100"
         android:title="Files History"
         app:showAsAction="collapseActionView" />
+
+    <item
+        android:id="@+id/calllog"
+        android:title="Call Log"
+        app:showAsAction="always"
+        android:visible="false"
+        android:icon="@drawable/call_log_icon"/>
+
 </menu>

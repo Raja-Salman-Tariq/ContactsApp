@@ -27,9 +27,9 @@ class NetworkDiscerner(contact  :   String?){
                         if (!isTelenor(substr))
                             type = ContactsModel.TYPE_OTHER
         }
-
-        //Log.d("nwdiscr", "contact: $contact, type:$type")
     }
+
+    /*--------------------------------------------------------------------------------------------*/
 
     private fun isTelenor(substr: String): Boolean {
             if (substr.run{ contains("0340") ||
@@ -60,6 +60,8 @@ class NetworkDiscerner(contact  :   String?){
             return false
     }
 
+    /*--------------------------------------------------------------------------------------------*/
+
     private fun isZong(substr: String): Boolean {
         if (substr.run{ contains("0310") ||
                     contains("0311") ||
@@ -86,6 +88,8 @@ class NetworkDiscerner(contact  :   String?){
         }
         return false
     }
+
+    /*--------------------------------------------------------------------------------------------*/
 
     private fun isJazz(substr: String): Boolean {
         if (substr.run{ contains("0300") ||
@@ -127,6 +131,8 @@ class NetworkDiscerner(contact  :   String?){
         }
         return false
     }
+
+    /*--------------------------------------------------------------------------------------------*/
 
     private fun isUfone(substr: String): Boolean {
         if (substr.run{ contains("0330") ||

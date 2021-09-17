@@ -15,9 +15,10 @@ import com.example.a4v4.ui.apps.AppsFragment
 class MyAppsRvAdapter(
     private val fragment    :   AppsFragment,
     private val data        :   ArrayList<PackageInfo>,
-//    private var dataFiltered:   ArrayList<ContactsModel> =   ArrayList(),
 )   :   RecyclerView.Adapter<MyAppsRvAdapter.MyViewHolder>()//, Filterable
 {
+    /*-------------------------------  V I E W   H O L D E R  ------------------------------------*/
+
     class MyViewHolder(
         private val binding : RvAppsLayoutBinding,
         val name            :   TextView            =   binding.rvAppName,
@@ -38,63 +39,26 @@ class MyAppsRvAdapter(
 
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
         val myData              =   data[position]
-//        val myData              =   dataFiltered[position]
-
-        var appIcon             :   Drawable?   =   null
-
-//        fragment.requireContext().packageManager.apply{
-//            holder.name.text        =   getApplicationLabel(myData)
-//            appIcon                 =   getApplicationIcon(myData)
-//        }
-
         holder.name.text        =   myData.applicationInfo.loadLabel(fragment.requireContext().packageManager)
         holder.img.setImageDrawable(myData.applicationInfo.loadIcon(fragment.requireContext().packageManager))
     }
 
+    /*--------------------------------------------------------------------------------------------*/
+
     override fun getItemCount() =   data.size//dataFiltered.size
 
+    /*-------------------------  C O N V E N I E N C E   M E T H O D  ----------------------------*/
+
+    // handles live data updation and empty text visibility
     fun updateData(updData  :   List<PackageInfo>) {
         data.clear()
-//        dataFiltered.clear()
         if (updData.isEmpty()) {
             fragment.binding.emptyRvAppsTxt.visibility  =   View.VISIBLE
         }
         else {
             fragment.binding.emptyRvAppsTxt.visibility = View.GONE
             data.addAll(updData)
-//            dataFiltered.addAll(updData)
         }
         notifyDataSetChanged()
     }
-
-//    override fun getFilter(): Filter {
-//        return object : Filter() {
-//            override fun performFiltering(constraint: CharSequence?): FilterResults {
-//                dataFiltered = if (constraint.isNullOrEmpty()) data else {
-//                    val filteredList = ArrayList<ContactsModel>()
-//                    data
-//                        .filter {
-//                            (it.name.lowercase().contains(constraint?.toString()?.lowercase())) or
-//                                    (it.number.contains(constraint))
-//                        }
-//                        .forEach { filteredList.add(it) }
-//                    filteredList
-//                }
-//                return FilterResults().apply { values = dataFiltered }
-//            }
-//            override fun publishResults(constraint: CharSequence?, results: FilterResults?) {
-//                dataFiltered = if (results?.values == null) {
-//                    ArrayList()
-//                }
-//                else {
-//                    results.values as ArrayList<ContactsModel>
-//                }
-//                notifyDataSetChanged()
-//                if (dataFiltered.isEmpty())
-//                    fragment.binding.emptyRvTxt.visibility=View.VISIBLE
-//                else
-//                    fragment.binding.emptyRvTxt.visibility=View.INVISIBLE
-//            }
-//        }
-//    }
 }

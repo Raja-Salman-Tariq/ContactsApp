@@ -19,11 +19,12 @@ import com.example.a4v4.utils.MyTimeStampFormatter
 class MyFilesRvAdapter(
     private val fragment    :   FilesFragment,
     private val data        :   ArrayList<MyFiles>,
-//    private var dataFiltered:   ArrayList<ContactsModel> =   ArrayList(),
-)   :   RecyclerView.Adapter<MyFilesRvAdapter.MyViewHolder>()//, Filterable
+)   :   RecyclerView.Adapter<MyFilesRvAdapter.MyViewHolder>()
 {
 
-    val myTsFormatter   =   MyTimeStampFormatter()
+    private val myTsFormatter   =   MyTimeStampFormatter()
+
+    /*-------------------------------  V I E W   H O L D E R  ------------------------------------*/
 
     class MyViewHolder(
         private val binding : RvFilesLayoutBinding,
@@ -49,8 +50,13 @@ class MyFilesRvAdapter(
         holder.ts.text          =   myTsFormatter.format(myData.timestamp)
     }
 
+    /*--------------------------------------------------------------------------------------------*/
+
     override fun getItemCount() =   data.size
 
+    /*-------------------------  C O N V E N I E N C E   M E T H O D  ----------------------------*/
+
+    // handles live data updation and empty text visibility
     fun updateData(updData  :   List<MyFiles>) {
         data.clear()
         if (updData.isEmpty()) {

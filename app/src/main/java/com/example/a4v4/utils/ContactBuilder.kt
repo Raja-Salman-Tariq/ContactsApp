@@ -21,17 +21,16 @@ class ContactBuilder(val context: Context){
     /*------------------------------ H E L P E R    F U N C T I O N S ---------------------------------*/
 
     fun buildContact(cursor: Cursor): ContactsModel {
-        count++
-//        sth(cursor)
+        count++ //  to count new total instances of contacts being added for saving count in shared pref
+
         id              =   cursor.getLong(cursor.getColumnIndexOrThrow(ContactsContract.Contacts._ID))
         name            =   cursor.getString(cursor.getColumnIndexOrThrow(ContactsContract.Contacts.DISPLAY_NAME))
-        num             =   acquireNumbers(id.toString())//cursor.getString(cursor.getColumnIndexOrThrow(ContactsContract.CommonDataKinds.Phone.NUMBER))
+        num             =   acquireNumbers(id.toString())
         email           =   acquireEmails(id.toString())
-        address         =   acquireAddresses(id.toString())//cursor.getString(cursor.getColumnIndexOrThrow(ContactsContract.CommonDataKinds.StructuredPostal.FORMATTED_ADDRESS))
-        organization    =   acquireOrganizations(id.toString())//acquireOrganizations(id.toString())//cursor.getString(cursor.getColumnIndexOrThrow(ContactsContract.CommonDataKinds.Organization.DISPLAY_NAME))
-        title           =   acquireTitle(id.toString())//acquireTitles(id.toString())//cursor.getString(cursor?.getColumnIndexOrThrow(ContactsContract.CommonDataKinds.Organization.TITLE))
+        address         =   acquireAddresses(id.toString())
+        organization    =   acquireOrganizations(id.toString())
+        title           =   acquireTitle(id.toString())
 
-        //Log.d("idx", "fetchContacts: {id:${id}}-{name:$name}-{num:$num}-{email:$email}-{addr:$address}-{orga:$organization}")
 
         return ContactsModel(
             id,

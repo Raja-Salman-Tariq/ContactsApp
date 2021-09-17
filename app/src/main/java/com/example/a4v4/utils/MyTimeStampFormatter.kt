@@ -8,11 +8,10 @@ class MyTimeStampFormatter(){
     constructor(timestamp: String, ):this(){
 
         val strTokr =   StringTokenizer(timestamp, "- :")
-        var string  =   ""
+
         val yr      =   strTokr.nextToken()
         val month   =   strTokr.nextToken()
         val day     =   strTokr.nextToken()
-
         var hour    =   strTokr.nextToken()
         val min     =   strTokr.nextToken()
 
@@ -26,6 +25,8 @@ class MyTimeStampFormatter(){
         formattedTimestamp = day+" "+toMonth(month)+" "+yr+", "+hour+":"+min+" "+timeOfDay
     }
 
+    /*--------------------------------------------------------------------------------------------*/
+    // helper function to convert numerical representation of month to named repr
     private fun toMonth(str:String): String {
         return when (str){
             "01"    ->  "Jan"
@@ -42,6 +43,8 @@ class MyTimeStampFormatter(){
             else    ->  "Dec"
         }
     }
+
+    /*--------------------------------------------------------------------------------------------*/
 
     fun format(ts:String): String {
         val strTokr =   StringTokenizer(ts, "- :")

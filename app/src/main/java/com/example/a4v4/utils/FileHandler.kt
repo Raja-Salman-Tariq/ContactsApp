@@ -3,7 +3,6 @@ package com.example.a4v4.utils
 import android.content.Context
 import android.content.Context.MODE_PRIVATE
 import android.content.Intent
-import android.util.Log
 import androidx.core.content.FileProvider
 import com.example.a4v4.database.ContactsModel
 import com.example.a4v4.database.MyFiles
@@ -15,7 +14,7 @@ import java.sql.Timestamp
 
 class FileHandler(private val ctxt: Context) {
 
-    var myFile  :   MyFiles?    =   null
+    var myFile          :   MyFiles?    =   null
     private var myTs    =   Timestamp((System.currentTimeMillis())).toString()
 
     init{
@@ -26,6 +25,8 @@ class FileHandler(private val ctxt: Context) {
             e.printStackTrace()
         }
     }
+
+    /*--------------------------------------------------------------------------------------------*/
 
     companion object{
         private const val FILE_NAME    =   "contacts.csv"
@@ -43,6 +44,8 @@ class FileHandler(private val ctxt: Context) {
         }
     }
 
+    /*--------------------------------------------------------------------------------------------*/
+
     fun createCSV(contacts : List<ContactsModel>?): FileHandler {
 
         if (contacts == null) {
@@ -50,18 +53,16 @@ class FileHandler(private val ctxt: Context) {
         }
 
         if (fos == null) {
-//            Log.d("timestamp", "createC    ${Timestamp((System.currentTimeMillis()))} SV: ")
             myTs    =   Timestamp((System.currentTimeMillis())).toString()
             fos = ctxt.openFileOutput(FILE_NAME +"_${myTs}", MODE_PRIVATE)
         }
 
         try {
 
-            // Successfully writting to file
+            // Successfully writing to file
             fos?.write("Index, Name, Number, Type\n".toByteArray())
             for (contact in contacts) {
                 fos?.write(contact.toString().toByteArray())
-                //Log.d("myfilesdirx", "successfully wrote: $contact")
             }
 
             myFile  =   MyFiles(FILE_NAME+"_$myTs", myTs)

@@ -10,45 +10,25 @@ import com.example.a4v4.MainActivity
 import com.example.a4v4.R
 import com.example.a4v4.application.MyApp
 import com.example.a4v4.databinding.FragmentAppsBinding
-import com.example.a4v4.databinding.FragmentHomeBinding
 import com.example.a4v4.rv.MyAppsRvAdapter
-import com.example.a4v4.rv.MyRvAdapter
 
 
-class AppsFragment(val mainActivity: MainActivity) : Fragment(R.layout.fragment_home) {
-    val appsViewModel           :   AppsViewModel           by  viewModels{
-    MyViewModelFactory((this.requireActivity().application as MyApp).repository!!)
+class AppsFragment : Fragment(R.layout.fragment_home) {
+
+    private val appsViewModel           :       AppsViewModel           by  viewModels{
+    MyViewModelFactory((this.requireActivity().application as MyApp).repository)
     }
-    private var _binding                :   FragmentAppsBinding?    =   null
+    private var _binding                :       FragmentAppsBinding?    =   null
+    val binding get()                   =       _binding!!
 
-    // This property is only valid between onCreateView and
-    // onDestroyView.
-    val binding get()           =   _binding!!
+    private lateinit var recyclerView   :       RecyclerView
+    private lateinit var myRvAdapter    :       MyAppsRvAdapter
 
-    private lateinit var recyclerView   : RecyclerView
-    lateinit var myRvAdapter            : MyAppsRvAdapter
-
-    /*--------------------------------------------------------------------------------------------*/
-
-//    override fun onCreate(savedInstanceState: Bundle?) {
-//        super.onCreate(savedInstanceState)
-//        getPermission(mainActivity)
-//    }
-
+    /*----------------------  L I F E C Y C L E   C A L L B A C K S ------------------------------*/
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
-    }
-
-
-    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        menu?.findItem(R.id.menu_search)?.isVisible =   false
-        menu?.findItem(R.id.export)?.isVisible      =   false
-        menu?.findItem(R.id.history)?.isVisible      =   false
-
-        //Log.d("lemenew", "onCreateOptionsMenu: ")
-        super.onCreateOptionsMenu(menu, inflater!!)
     }
 
     override fun onCreateView(
@@ -65,10 +45,6 @@ class AppsFragment(val mainActivity: MainActivity) : Fragment(R.layout.fragment_
         return root
     }
 
-
-
-    /*--------------------------------------------------------------------------------------------*/
-
     override fun onResume() {
         super.onResume()
         (requireActivity() as MainActivity).let{
@@ -77,6 +53,24 @@ class AppsFragment(val mainActivity: MainActivity) : Fragment(R.layout.fragment_
         }
     }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
+
+    /*--------------------------------------------------------------------------------------------*/
+    // set up toolbar
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        menu.findItem(R.id.menu_search)?.isVisible =   false
+        menu.findItem(R.id.export)?.isVisible      =   false
+        menu.findItem(R.id.history)?.isVisible      =   false
+
+        super.onCreateOptionsMenu(menu, inflater)
+    }
+
+    /*--------------------------------------------------------------------------------------------*/
+
+    // set up recycler view with live data and observer
     private fun setUpRv() {
         recyclerView                =   binding.fragmentAppsRv
         myRvAdapter                 =   MyAppsRvAdapter(this, arrayListOf())
@@ -86,24 +80,5 @@ class AppsFragment(val mainActivity: MainActivity) : Fragment(R.layout.fragment_
         appsViewModel.getApps().observe(viewLifecycleOwner){
                 data    ->  myRvAdapter.updateData(data)
         }
-
-//        myRvAdapter.updateData(appsViewModel.repo.myApps)
-
-    }
-
-    /*--------------------------------------------------------------------------------------------*/
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
-    }
-
-    /*--------------------------------------------------------------------------------------------*/
-
-    fun getApps(type:Short){
-//        appsViewModel.getApps(type).observe(viewLifecycleOwner){
-//                data    ->  myRvAdapter.updateData(data)
-//        }
-//        myRvAdapter.updateData(appsViewModel.repo.myApps)
     }
 }

@@ -4,7 +4,6 @@ import android.Manifest
 import android.content.Context
 import android.content.pm.PackageManager
 import android.os.Bundle
-import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.ViewGroup
@@ -16,14 +15,15 @@ import androidx.core.content.ContextCompat
 import androidx.core.view.GravityCompat
 import com.example.a4v4.application.MyApp
 import com.example.a4v4.databinding.ActivityMainBinding
+import com.example.a4v4.ui.calllogs.CallLogsFragment
 import com.example.a4v4.ui.details.DetailsFragment
 import com.example.a4v4.ui.files.FilesFragment
 import com.example.a4v4.ui.home.HomeFragment
 import com.example.a4v4.utils.FileHandler
+import com.example.a4v4.utils.MyDrawerLayoutHelper
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 
 
@@ -37,11 +37,7 @@ class MainActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
 
     lateinit var myDrawer: MyDrawerLayoutHelper
 
-
-//    override fun onResume() {
-//        super.onResume()
-//
-//    }
+    lateinit var callLogsFragment    :   CallLogsFragment
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -97,15 +93,38 @@ class MainActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
                 true
             }
             R.id.home   ->  {
-                myDrawer.drawerLayout.openDrawer(GravityCompat.START)
-                (getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager)
-                    ?.hideSoftInputFromWindow(findViewById<ViewGroup>(android.R.id.content).rootView.windowToken, 0)
+                if (homeFragment?.isVisible!!) {
+                    myDrawer.drawerLayout.openDrawer(GravityCompat.START)
+                    (getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager)
+                        ?.hideSoftInputFromWindow(
+                            findViewById<ViewGroup>(android.R.id.content).rootView.windowToken,
+                            0
+                        )
+                }
+                else if (callLogsFragment?.isVisible!!){
+                    setActionBarTitle("Details")
+                    supportFragmentManager.beginTransaction().apply {
+                        replace(R.id.frag_container, detailsFragment)
+                        commit()
+                    }
+                }
                 return true
             }
             R.id.history    ->  {
                 setActionBarTitle("History")
                 supportFragmentManager.beginTransaction().apply {
-                    replace(R.id.frag_container, FilesFragment(this@MainActivity)!!)
+                    replace(R.id.frag_container, FilesFragment()!!)
+                    commit()
+                }
+                (getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager)
+                    ?.hideSoftInputFromWindow(findViewById<ViewGroup>(android.R.id.content).rootView.windowToken, 0)
+                return true
+            }
+            R.id.calllog    ->  {
+                setActionBarTitle("Call Log")
+//                callLogsFragment = CallLogsFragment((application as MyApp).repository.selectedContact!!)
+                supportFragmentManager.beginTransaction().apply {
+                    replace(R.id.frag_container, callLogsFragment)
                     commit()
                 }
                 (getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager)
@@ -117,6 +136,13 @@ class MainActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
     }
 
     override fun onSupportNavigateUp(): Boolean {
+
+        if (callLogsFragment.isVisible){
+            supportFragmentManager.beginTransaction().apply {
+                replace(R.id.frag_container, detailsFragment)
+                commit()
+            }
+        }
 
         if (homeFragment?.isVisible!!) {
             myDrawer.drawerLayout.openDrawer(GravityCompat.START)
@@ -162,7 +188,8 @@ class MainActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
         val grant = ContextCompat.checkSelfPermission(mainActivity, permission)
         if (grant == PackageManager.PERMISSION_GRANTED) {
             (application as MyApp).initRepo()
-            homeFragment = HomeFragment(this)
+            homeFragment = HomeFragment()
+            callLogsFragment = CallLogsFragment((application as com.example.a4v4.application.MyApp).repository.getSelectedContact())
             supportFragmentManager.beginTransaction().apply {
                 replace(R.id.frag_container, homeFragment!!)
                 commit()
@@ -183,7 +210,7 @@ class MainActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
         if (requestCode == 1) {
             if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 (application as MyApp).initRepo()
-                homeFragment = HomeFragment(this)
+                homeFragment = HomeFragment()
                 supportFragmentManager.beginTransaction().apply {
                     replace(R.id.frag_container, homeFragment!!)
                     commit()

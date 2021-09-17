@@ -1,6 +1,7 @@
 package com.example.a4v4.database
 
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
@@ -15,7 +16,7 @@ interface ContactsDao {
     @Query("SELECT * FROM ContactsModel WHERE type = :type")
     fun getContacts(type:Short): LiveData<List<ContactsModel>>
 
-    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(contact: ContactsModel)
 
     @Query("DELETE FROM ContactsModel")

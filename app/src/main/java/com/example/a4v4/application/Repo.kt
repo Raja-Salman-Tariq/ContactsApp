@@ -2,9 +2,7 @@ package com.example.a4v4.application
 
 import android.content.Context
 import android.content.pm.PackageInfo
-import android.database.Cursor
 import android.provider.ContactsContract
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.example.a4v4.database.ContactsDao
@@ -12,7 +10,6 @@ import com.example.a4v4.database.ContactsModel
 import com.example.a4v4.database.MyFiles
 import com.example.a4v4.database.MyFilesDao
 import com.example.a4v4.utils.ContactBuilder
-import com.example.a4v4.utils.NetworkDiscerner
 
 
 class Repo(
@@ -22,9 +19,9 @@ class Repo(
     ) {
     /*------------------------------ C O R E    V A R I A B L E S ---------------------------------*/
 
-    val allContacts: LiveData<List<ContactsModel>> = contactDao.getContacts()
+    var allContacts             : LiveData<List<ContactsModel>>     =   contactDao.getContacts()
 
-    var selectedContact : ContactsModel? =   null
+    var selectedContact         = MutableLiveData<ContactsModel?>().apply { value = ContactsModel(-1, "", "",  5, "", "", "", "", false) }
 
     private val ufoneContacts   : LiveData<List<ContactsModel>>     =   contactDao.getContacts(ContactsModel.TYPE_UFONE)
     private val telenorContacts : LiveData<List<ContactsModel>>     =   contactDao.getContacts(ContactsModel.TYPE_TELENOR)
@@ -34,8 +31,7 @@ class Repo(
 
     private val myApps          =   MutableLiveData<ArrayList<PackageInfo>>().apply { value=ArrayList() }
     private val myFiles         :   LiveData<List<MyFiles>> =   myFilesDao.getFiles()
-
-
+    private val myLogs          =   MutableLiveData<ArrayList<PackageInfo>>().apply { value=ArrayList() }
 
     /*------------------------------ C O M M U N I C A T O R S ---------------------------------*/
 
@@ -43,6 +39,10 @@ class Repo(
     fun getApps()   =   myApps as LiveData<ArrayList<PackageInfo>>
 
     fun getFiles()  =   myFiles
+
+    fun getLogs()   =   myLogs as LiveData<ArrayList<PackageInfo>>
+
+    fun getSelectedContact()    =   selectedContact as LiveData<ContactsModel?>
 
     fun getContacts(type:Short): LiveData<List<ContactsModel>> {
         return when(type){
@@ -53,17 +53,15 @@ class Repo(
             ContactsModel.TYPE_OTHER   ->  otherContacts
             else                    ->  allContacts
         }
-    }    suspend fun insertFile(myFile:MyFiles)    =   myFilesDao.insert(myFile)
+    }
 
+    suspend fun insertFile(myFile:MyFiles)    =   myFilesDao.insert(myFile)
 
     /*------------------------------ F E T C H   M E T H O D S ---------------------------------*/
 
     suspend fun fetchContacts(){
-        Log.d("sharedpref", "fetchContacts: ")
         val sharedPref = context.getSharedPreferences("contacts", Context.MODE_PRIVATE)
-
         val lastCount       =   sharedPref.getInt("count", -1)
-        Log.d("sharedpref", "last : $lastCount ")
 
         val cursor      = context.contentResolver.query(
             ContactsContract.Contacts.CONTENT_URI,
@@ -74,26 +72,23 @@ class Repo(
         )
 
         val currentCount    =   cursor?.count
-        Log.d("sharedpref", "curr : $currentCount ")
 
         if (currentCount==lastCount) {
-            Log.d("sharedpref", "fetchContacts: ! not fetching")
             return
         }
 
-        Log.d("sharedpref", "fetchContacts: ! FETCHING")
-
+        var go  =   10
         val myContactBuilder    =   ContactBuilder(context)
 
         if (cursor?.count!!> 0) {
             var toAdd   : ContactsModel
-            while (cursor.moveToNext()) {
-
+            while (cursor.moveToNext() && go!=0) {
+                go-=1
                 toAdd   =   myContactBuilder.buildContact(cursor)
                 contactDao.insert(toAdd)
             }
         }
-        cursor?.close()
+        cursor.close()
 
         with (sharedPref.edit()) {
             putInt("count", myContactBuilder.count)
@@ -126,5 +121,9 @@ class Repo(
 
         arrayOfAppInfo.sortWith(compareBy { it.applicationInfo.loadLabel(context.packageManager).toString()})
         myApps.postValue(arrayOfAppInfo as ArrayList<PackageInfo>)
+    }
+
+    fun fetchLogs() {
+        TODO("Not yet implemented")
     }
 }
