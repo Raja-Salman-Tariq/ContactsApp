@@ -1,5 +1,6 @@
 package com.example.a4v4.ui.apps
 
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
@@ -8,6 +9,9 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 class AppsViewModel(private val repo: Repo) : ViewModel() {
+
+    val loading : LiveData<Boolean> =   repo.getLoading()
+
     // constr and initialization
     init {
         viewModelScope.launch(Dispatchers.IO) {

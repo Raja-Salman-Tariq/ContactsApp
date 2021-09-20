@@ -72,6 +72,10 @@ class AppsFragment : Fragment(R.layout.fragment_home) {
 
     // set up recycler view with live data and observer
     private fun setUpRv() {
+        appsViewModel.loading.observe(viewLifecycleOwner){
+            (requireActivity() as MainActivity).handleLoading(it)
+        }
+
         recyclerView                =   binding.fragmentAppsRv
         myRvAdapter                 =   MyAppsRvAdapter(this, arrayListOf())
         recyclerView.layoutManager  =   LinearLayoutManager(requireContext())

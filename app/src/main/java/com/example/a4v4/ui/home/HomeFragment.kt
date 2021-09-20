@@ -20,7 +20,7 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
     MyViewModelFactory((this.requireActivity().application as MyApp).repository)
     }
 
-    private var _binding                :   FragmentHomeBinding?    =   null
+    var _binding                :   FragmentHomeBinding?    =   null
     val binding get()                   =   _binding!!
 
     private lateinit var recyclerView   :   RecyclerView
@@ -58,6 +58,11 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
     /*--------------------------------------------------------------------------------------------*/
 
     private fun setUpRv() {
+
+        homeViewModel.loading.observe(viewLifecycleOwner){
+            (requireActivity() as MainActivity).handleLoading(it)
+        }
+
         recyclerView                =   binding.fragmentHomeRv
         myRvAdapter                 =   MyRvAdapter(this, arrayListOf())
         recyclerView.layoutManager  =   LinearLayoutManager(requireContext())

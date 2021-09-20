@@ -70,10 +70,10 @@ class MyCallLogsRvAdapter(
     fun updateData(updData  :   List<CallLogEntry>) {
         data.clear()
         if (updData.isEmpty()) {
-            fragment.binding.emptyRvAppsTxt.visibility  =   View.VISIBLE
+            fragment.binding.emptyRvCallLogsTxt.visibility  =   View.VISIBLE
         }
         else {
-            fragment.binding.emptyRvAppsTxt.visibility = View.GONE
+            fragment.binding.emptyRvCallLogsTxt.visibility = View.GONE
             data.addAll(updData)
         }
         notifyDataSetChanged()

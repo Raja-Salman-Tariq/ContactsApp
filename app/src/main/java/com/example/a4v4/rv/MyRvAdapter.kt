@@ -120,7 +120,10 @@ class MyRvAdapter(
                 if (dataFiltered.isEmpty())
                     fragment.binding.emptyRvTxt.visibility=View.VISIBLE
                 else
-                    fragment.binding.emptyRvTxt.visibility=View.INVISIBLE
+                    if (fragment != null)
+                        if (fragment._binding != null)
+                            if (fragment._binding?.emptyRvTxt != null)
+                                fragment._binding?.emptyRvTxt?.visibility=View.INVISIBLE
             }
         }
     }

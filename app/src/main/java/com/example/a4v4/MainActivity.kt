@@ -3,10 +3,10 @@ package com.example.a4v4
 import android.Manifest
 import android.content.Context
 import android.content.pm.PackageManager
+import android.os.Binder
 import android.os.Bundle
-import android.view.Menu
-import android.view.MenuItem
-import android.view.ViewGroup
+import android.util.Log
+import android.view.*
 import android.view.inputmethod.InputMethodManager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
@@ -25,19 +25,21 @@ import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import androidx.core.view.MenuItemCompat
 
 
 class MainActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
 
-    lateinit var binding            : ActivityMainBinding
+    lateinit var    binding             :   ActivityMainBinding
 
+    var             homeFragment        :   HomeFragment?    =null//=   HomeFragment(this)
+    private val     detailsFragment     =   DetailsFragment()
+    lateinit var    callLogsFragment    :   CallLogsFragment
 
-    var homeFragment       :   HomeFragment?    =null//=   HomeFragment(this)
-    private val detailsFragment    =   DetailsFragment()
+    lateinit var    myDrawer            :   MyDrawerLayoutHelper
+    private lateinit var menu: Menu
 
-    lateinit var myDrawer: MyDrawerLayoutHelper
-
-    lateinit var callLogsFragment    :   CallLogsFragment
+    /*============================================================================================*/
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -67,18 +69,68 @@ class MainActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
         )
     }
 
+    fun handleLoading(isLoading :   Boolean){
+        if (isLoading){
+            Log.d("loadarr", "onCreate: tru")
+            binding.myLoader.visibility=View.VISIBLE
+            binding.mainLoadingFocus.visibility=View.VISIBLE
+            window.setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+        }
+        else{
+            Log.d("loadarr", "onCreate: false")
+            binding.myLoader.visibility=View.GONE
+            binding.mainLoadingFocus.visibility=View.GONE
+            window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+        }
+    }
+
+    fun setActionBarTitle(str:String){
+        binding.toolbar.apply {
+            title   =   str
+        }
+
+    }
+
+    /*==============================================================================================
+    * ---------------------------     S E A R C H   V I E W     ---------------------------------- *
+    ==============================================================================================*/
+
+    override fun onQueryTextSubmit(query: String?): Boolean {
+        homeFragment?.myRvAdapter?.filter?.filter(query)
+        (menu.findItem(R.id.menu_search).actionView as SearchView).clearFocus()
+        return false
+    }
+
+    override fun onQueryTextChange(newText: String?): Boolean {
+        homeFragment?.myRvAdapter?.filter?.filter(newText)
+        return false
+    }
+
+    /*==============================================================================================
+    * ---------------------------     O P T I O N S   M E N U   ---------------------------------- *
+    ==============================================================================================*/
+
     /*----- POPULATE APP BAR MENU -----*/
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         // Inflate the menu; this adds items to the action bar if it is present.
         menuInflater.inflate(R.menu.main, menu)
 
+        this.menu   =   menu
+
         (menu.findItem(R.id.menu_search).actionView as SearchView).apply {
             setOnQueryTextListener(this@MainActivity)
+            setOnQueryTextFocusChangeListener { _, p1 ->
+                if (!p1)// not have focus
+                    isIconified =   true
+            }
         }
         return true
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
+
+        Log.d("onoptionselect", "onOptionsItemSelected: ")
+
         return when (item.itemId) {
             R.id.export  -> {
                 FileHandler(this).createCSV((application as MyApp).repository?.allContacts?.value).myFile.run {
@@ -114,6 +166,7 @@ class MainActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
                 setActionBarTitle("History")
                 supportFragmentManager.beginTransaction().apply {
                     replace(R.id.frag_container, FilesFragment()!!)
+                    addToBackStack(null)
                     commit()
                 }
                 (getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager)
@@ -135,24 +188,66 @@ class MainActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
         }
     }
 
+    /*==============================================================================================
+    * ---------------------------     N A V I G A T I O N S     ---------------------------------- *
+    ==============================================================================================*/
+
+    override fun onBackPressed() {
+
+        when {
+            callLogsFragment.isResumed -> {
+                Log.d("onsportnav", "onSupportNavigateUp: by call logs")
+                supportFragmentManager.beginTransaction().apply {
+                    replace(R.id.frag_container, detailsFragment)
+                    commit()
+                }
+            }
+            detailsFragment.isVisible -> {
+                supportFragmentManager.popBackStack()
+            }
+            homeFragment?.isResumed!! -> {
+                Log.d("onsportnav", "onSupportNavigateUp: by home")
+                myDrawer.drawerLayout.openDrawer(GravityCompat.START)
+                (getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager)
+                    ?.hideSoftInputFromWindow(
+                        findViewById<ViewGroup>(android.R.id.content).rootView.windowToken,
+                        0
+                    )
+            }
+
+            else    ->
+                super
+                    .onBackPressed()
+        }
+    }
+
     override fun onSupportNavigateUp(): Boolean {
 
-        if (callLogsFragment.isVisible){
-            supportFragmentManager.beginTransaction().apply {
-                replace(R.id.frag_container, detailsFragment)
-                commit()
+        when {
+            callLogsFragment.isResumed -> {
+                Log.d("onsportnav", "onSupportNavigateUp: by call logs")
+                supportFragmentManager.beginTransaction().apply {
+                    replace(R.id.frag_container, detailsFragment)
+                    commit()
+                }
             }
-        }
-
-        if (homeFragment?.isVisible!!) {
-            myDrawer.drawerLayout.openDrawer(GravityCompat.START)
-            (getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager)
-                ?.hideSoftInputFromWindow(findViewById<ViewGroup>(android.R.id.content).rootView.windowToken, 0)
-        }
-        else {
-            supportFragmentManager.beginTransaction().apply {
-                replace(R.id.frag_container, homeFragment!!)
-                commit()
+            detailsFragment.isVisible -> {
+                supportFragmentManager.popBackStack()
+            }
+            homeFragment?.isResumed!! -> {
+                Log.d("onsportnav", "onSupportNavigateUp: by home")
+                myDrawer.drawerLayout.openDrawer(GravityCompat.START)
+                (getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager)
+                    ?.hideSoftInputFromWindow(
+                        findViewById<ViewGroup>(android.R.id.content).rootView.windowToken,
+                        0
+                    )
+            }
+            else    ->  {
+                Log.d("onoptionselect", "onSupportNavigateUp: ")
+                supportFragmentManager.popBackStack()
+                if (myDrawer.navigationView.menu.findItem(R.id.nav_apps).isChecked)
+                    myDrawer.reset()
             }
         }
         return true
@@ -166,27 +261,14 @@ class MainActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
         }
     }
 
-    override fun onQueryTextSubmit(query: String?): Boolean {
-        homeFragment?.myRvAdapter?.filter?.filter(query)
-        return false
-    }
-
-    override fun onQueryTextChange(newText: String?): Boolean {
-        homeFragment?.myRvAdapter?.filter?.filter(newText)
-        return false
-    }
-
-    fun setActionBarTitle(str:String){
-        binding.toolbar.apply {
-            title   =   str
-        }
-
-    }
-
+    /*==============================================================================================
+    * ---------------------------     P E R M I S S I O N S     ---------------------------------- *
+    ==============================================================================================*/
     private fun getPermission(mainActivity: MainActivity){
         val permission: String = Manifest.permission.READ_CONTACTS
         val grant = ContextCompat.checkSelfPermission(mainActivity, permission)
-        if (grant == PackageManager.PERMISSION_GRANTED) {
+        val grant2= ContextCompat.checkSelfPermission(mainActivity, Manifest.permission.READ_CALL_LOG)
+        if (grant == PackageManager.PERMISSION_GRANTED && grant2 == PackageManager.PERMISSION_GRANTED ) {
             (application as MyApp).initRepo()
             homeFragment = HomeFragment()
             callLogsFragment = CallLogsFragment((application as com.example.a4v4.application.MyApp).repository.getSelectedContact())
@@ -196,8 +278,27 @@ class MainActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
             }
         }
         else{
-            val permissionList = arrayOfNulls<String>(1)
-            permissionList[0] = permission
+
+            var permissionList =   arrayOfNulls<String>(1)
+
+
+            if (grant == grant2  && grant != PackageManager.PERMISSION_GRANTED) {
+                permissionList = arrayOfNulls<String>(2)
+                permissionList[0] = permission
+                permissionList[1] = Manifest.permission.READ_CALL_LOG
+            }
+
+
+            else if (grant!= PackageManager.PERMISSION_GRANTED) {
+                permissionList = arrayOfNulls<String>(1)
+                permissionList[0] = permission
+            }
+
+            else if (grant2!= PackageManager.PERMISSION_GRANTED) {
+                permissionList = arrayOfNulls<String>(1)
+                permissionList[0] = Manifest.permission.READ_CALL_LOG
+            }
+
             ActivityCompat.requestPermissions(mainActivity, permissionList, 1)
         }
     }
@@ -208,16 +309,23 @@ class MainActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if (requestCode == 1) {
-            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CALL_LOG) == PackageManager.PERMISSION_GRANTED
+                &&
+                ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CONTACTS) ==  PackageManager.PERMISSION_GRANTED) {
                 (application as MyApp).initRepo()
                 homeFragment = HomeFragment()
                 supportFragmentManager.beginTransaction().apply {
                     replace(R.id.frag_container, homeFragment!!)
                     commit()
                 }
-            } else {
+            }
+            else {
                 Snackbar
-                    .make(binding.root, "Please grant permission for contacts to use this app.", Snackbar.LENGTH_INDEFINITE)
+                    .make(
+                        binding.root,
+                        "Please grant the required permissions to use this app.",
+                        Snackbar.LENGTH_INDEFINITE
+                    )
                     .setAction("Close App") {
                         finish()
                     }

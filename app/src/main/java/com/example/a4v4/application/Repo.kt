@@ -3,6 +3,7 @@ package com.example.a4v4.application
 import android.content.Context
 import android.content.pm.PackageInfo
 import android.provider.ContactsContract
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.example.a4v4.database.ContactsDao
@@ -33,9 +34,13 @@ class Repo(
     private val myFiles         :   LiveData<List<MyFiles>> =   myFilesDao.getFiles()
     private val myLogs          =   MutableLiveData<ArrayList<PackageInfo>>().apply { value=ArrayList() }
 
+    private val loading         =   MutableLiveData<Boolean>().apply {value=true}
+
     /*------------------------------ C O M M U N I C A T O R S ---------------------------------*/
 
     // communicator methods to share observable live data
+    fun getLoading()    =   loading as LiveData<Boolean>
+
     fun getApps()   =   myApps as LiveData<ArrayList<PackageInfo>>
 
     fun getFiles()  =   myFiles
@@ -60,6 +65,9 @@ class Repo(
     /*------------------------------ F E T C H   M E T H O D S ---------------------------------*/
 
     suspend fun fetchContacts(){
+        loading.postValue(true)
+        Log.d("loadarr", " * * * fetchContacts: true ")
+
         val sharedPref = context.getSharedPreferences("contacts", Context.MODE_PRIVATE)
         val lastCount       =   sharedPref.getInt("count", -1)
 
@@ -74,16 +82,17 @@ class Repo(
         val currentCount    =   cursor?.count
 
         if (currentCount==lastCount) {
+            loading.postValue(false)
+            Log.d("loadarr", " * * * fetchContacts: FALSE ")
             return
         }
 
-        var go  =   10
         val myContactBuilder    =   ContactBuilder(context)
 
         if (cursor?.count!!> 0) {
             var toAdd   : ContactsModel
-            while (cursor.moveToNext() && go!=0) {
-                go-=1
+            while (cursor.moveToNext()) {
+                Log.d("loadarr", "---------")
                 toAdd   =   myContactBuilder.buildContact(cursor)
                 contactDao.insert(toAdd)
             }
@@ -94,10 +103,15 @@ class Repo(
             putInt("count", myContactBuilder.count)
             apply()
         }
+        loading.postValue(false)
+        Log.d("loadarr", " * * * fetchContacts: FALSE ")
+
     }
 
 
     fun fetchApps() {
+
+        loading.postValue(true)
 
         val arrayOfAppInfo =
             context.packageManager.getInstalledPackages(0)
@@ -121,6 +135,8 @@ class Repo(
 
         arrayOfAppInfo.sortWith(compareBy { it.applicationInfo.loadLabel(context.packageManager).toString()})
         myApps.postValue(arrayOfAppInfo as ArrayList<PackageInfo>)
+
+        loading.postValue(false)
     }
 
     fun fetchLogs() {

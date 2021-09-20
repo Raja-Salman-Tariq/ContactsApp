@@ -17,7 +17,7 @@ import com.google.android.material.navigation.NavigationView
 class MyDrawerLayoutHelper(
     private val mainActivity        : MainActivity,
     val drawerLayout                :   DrawerLayout,
-    private val navigationView      :   NavigationView,
+    val navigationView              :   NavigationView,
     private val actionBar           :   ActionBar,
     val application                 :   Application,
     private val applicationContext  :   Context,
@@ -82,5 +82,19 @@ class MyDrawerLayoutHelper(
         )
         mainActivity.homeFragment?.getContacts(contactType)
         selectedTitle=title
+    }
+
+    fun reset() {
+
+        val itemId  =   when(selectedTitle){
+            "Jazz"      ->  R.id.nav_jazz
+            "Telenor"   ->  R.id.nav_telenor
+            "UFone"     ->  R.id.nav_ufone
+            "Zong"      ->  R.id.nav_zong
+            "Other"     ->  R.id.nav_other
+            else        ->  R.id.nav_home
+        }
+
+        navigationView.menu.findItem(itemId).isChecked=true
     }
 }

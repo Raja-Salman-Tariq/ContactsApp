@@ -11,7 +11,7 @@ import com.example.a4v4.MainActivity
 import com.example.a4v4.R
 import com.example.a4v4.application.MyApp
 import com.example.a4v4.database.ContactsModel
-import com.example.a4v4.databinding.FragmentAppsBinding
+import com.example.a4v4.databinding.FragmentCallLogsBinding
 import com.example.a4v4.rv.MyCallLogsRvAdapter
 
 
@@ -21,7 +21,7 @@ class CallLogsFragment(val contact  : LiveData<ContactsModel?>) : Fragment(R.lay
     MyViewModelFactory((this.requireActivity().application as MyApp).repository)
     }
 
-    private var _binding                :       FragmentAppsBinding?    =   null
+    private var _binding                :       FragmentCallLogsBinding?    =   null
     val binding get()                   =       _binding!!
 
     private lateinit var recyclerView   :       RecyclerView
@@ -40,7 +40,7 @@ class CallLogsFragment(val contact  : LiveData<ContactsModel?>) : Fragment(R.lay
         savedInstanceState: Bundle?
     ): View {
 
-        _binding = FragmentAppsBinding.inflate(inflater, container, false)
+        _binding = FragmentCallLogsBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
         setUpRv()
@@ -58,6 +58,7 @@ class CallLogsFragment(val contact  : LiveData<ContactsModel?>) : Fragment(R.lay
 
     override fun onDestroyView() {
         super.onDestroyView()
+        binding.emptyRvCallLogsTxt.visibility = View.GONE
         _binding = null
     }
 
@@ -75,7 +76,7 @@ class CallLogsFragment(val contact  : LiveData<ContactsModel?>) : Fragment(R.lay
 
     // set up recycler view with live data and observer
     private fun setUpRv() {
-        recyclerView                =   binding.fragmentAppsRv
+        recyclerView                =   binding.fragmentCallLogsRv
         myRvAdapter                 =   MyCallLogsRvAdapter(this, arrayListOf())
         recyclerView.layoutManager  =   LinearLayoutManager(requireContext())
         recyclerView.adapter        =   myRvAdapter

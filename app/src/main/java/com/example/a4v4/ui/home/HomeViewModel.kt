@@ -11,7 +11,8 @@ import kotlinx.coroutines.launch
 
 class HomeViewModel(val repo: Repo) : ViewModel() {
 
-    var data    :   LiveData<List<ContactsModel>> =   repo.getContacts(0)
+    val loading :   LiveData<Boolean>               =   repo.getLoading()
+    var data    :   LiveData<List<ContactsModel>>   =   repo.getContacts(0)
 
     /*--------------------------------------------------------------------------------------------*/
 

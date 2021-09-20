@@ -5,11 +5,11 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="5dp"
-    tools:context=".ui.files.FilesFragment"
+    tools:context=".ui.calllogs.CallLogsFragment"
     >
 
     <TextView
-        android:id="@+id/emptyRvFilesTxt"
+        android:id="@+id/emptyRvCallLogsTxt"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -17,10 +17,10 @@
         android:textColor="@color/black_alt"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="No relevant files available to show"/>
+        android:text="No relevant entries available to show"/>
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/fragment_files_rv"
+        android:id="@+id/fragment_call_logs_rv"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layout_constraintTop_toTopOf="parent"
