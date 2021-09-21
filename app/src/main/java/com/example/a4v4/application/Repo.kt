@@ -66,6 +66,9 @@ class Repo(
 
     suspend fun fetchContacts(){
         loading.postValue(true)
+
+        contactDao.deleteAll()
+
         Log.d("loadarr", " * * * fetchContacts: true ")
 
         val sharedPref = context.getSharedPreferences("contacts", Context.MODE_PRIVATE)
