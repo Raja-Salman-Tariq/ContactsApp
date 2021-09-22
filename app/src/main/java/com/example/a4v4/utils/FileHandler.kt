@@ -19,7 +19,7 @@ class FileHandler(private val ctxt: Context) {
 
     init{
         try{
-            fos =ctxt.openFileOutput(FILE_NAME +"_${myTs}", MODE_PRIVATE)
+            fos =ctxt.openFileOutput(FILE_NAME +"_${myTs}.csv", MODE_PRIVATE)
         }catch (e:  Exception){
             fos =   null
             e.printStackTrace()
@@ -29,7 +29,7 @@ class FileHandler(private val ctxt: Context) {
     /*--------------------------------------------------------------------------------------------*/
 
     companion object{
-        private const val FILE_NAME    =   "contacts.csv"
+        private const val FILE_NAME    =   "contacts"
 
         var fos: FileOutputStream? = null
 
@@ -54,7 +54,7 @@ class FileHandler(private val ctxt: Context) {
 
         if (fos == null) {
             myTs    =   Timestamp((System.currentTimeMillis())).toString()
-            fos = ctxt.openFileOutput(FILE_NAME +"_${myTs}", MODE_PRIVATE)
+            fos = ctxt.openFileOutput(FILE_NAME +"_${myTs}.csv", MODE_PRIVATE)
         }
 
         try {
@@ -65,13 +65,13 @@ class FileHandler(private val ctxt: Context) {
                 fos?.write(contact.toString().toByteArray())
             }
 
-            myFile  =   MyFiles(FILE_NAME+"_$myTs", myTs)
+            myFile  =   MyFiles(FILE_NAME+"_$myTs.csv", myTs)
 
             // Sharing via android share sheet
             val shareIntent: Intent = Intent().apply {
                 action = Intent.ACTION_SEND
                 putExtra(Intent.EXTRA_STREAM, FileProvider.getUriForFile(ctxt, "com.example.a4v4..fileprovider", ctxt.getFileStreamPath(
-                    FILE_NAME+"_$myTs"
+                    FILE_NAME+"_$myTs.csv"
                 )))
                 type = "text/csv"
             }

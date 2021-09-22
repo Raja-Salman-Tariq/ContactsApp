@@ -26,6 +26,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import androidx.core.view.MenuItemCompat
+import com.example.a4v4.ui.AuthFragment
 
 
 class MainActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
@@ -68,6 +69,11 @@ class MainActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
             applicationContext,
             binding.toolbar
         )
+
+//        handleLoading(false)
+//        supportFragmentManager.beginTransaction()
+//            .replace(R.id.frag_container, AuthFragment())
+//            .commit()
     }
 
     fun handleLoading(isLoading :   Boolean){
@@ -296,12 +302,7 @@ class MainActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
         val grant2= ContextCompat.checkSelfPermission(mainActivity, Manifest.permission.READ_CALL_LOG)
         if (grant == PackageManager.PERMISSION_GRANTED && grant2 == PackageManager.PERMISSION_GRANTED ) {
             (application as MyApp).initRepo()
-            homeFragment = HomeFragment()
-            callLogsFragment = CallLogsFragment((application as com.example.a4v4.application.MyApp).repository.getSelectedContact())
-            supportFragmentManager.beginTransaction().apply {
-                replace(R.id.frag_container, homeFragment!!)
-                commit()
-            }
+            startMainApp()
         }
         else{
 
@@ -329,6 +330,15 @@ class MainActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
         }
     }
 
+    fun startMainApp(){
+        homeFragment = HomeFragment()
+        callLogsFragment = CallLogsFragment((application as com.example.a4v4.application.MyApp).repository.getSelectedContact())
+        supportFragmentManager.beginTransaction().apply {
+            replace(R.id.frag_container, homeFragment!!)
+            commit()
+        }
+    }
+
     override fun onRequestPermissionsResult(
         requestCode: Int, permissions: Array<String?>,
         grantResults: IntArray
@@ -339,12 +349,7 @@ class MainActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
                 &&
                 ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CONTACTS) ==  PackageManager.PERMISSION_GRANTED) {
                 (application as MyApp).initRepo()
-                homeFragment = HomeFragment()
-                callLogsFragment = CallLogsFragment((application as com.example.a4v4.application.MyApp).repository.getSelectedContact())
-                supportFragmentManager.beginTransaction().apply {
-                    replace(R.id.frag_container, homeFragment!!)
-                    commit()
-                }
+                startMainApp()
             }
             else {
                 Snackbar

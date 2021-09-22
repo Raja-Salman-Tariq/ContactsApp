@@ -86,12 +86,12 @@ class Repo(
 
         val currentCount    =   cursor?.count
 
-//        if (currentCount==lastCount) {
-//            loading.postValue(false)
-//            allContactsLoaded.postValue(true)
-//            Log.d("loadarr", " * * * fetchContacts: FALSE ")
-//            return
-//        }
+        if (currentCount==lastCount) {
+            loading.postValue(false)
+            allContactsLoaded.postValue(true)
+            Log.d("loadarr", " * * * fetchContacts: FALSE ")
+            return
+        }
 
         contactDao.deleteAll()
 
@@ -107,18 +107,11 @@ class Repo(
                 contactDao.insert(toAdd)
 //                listToAdd.add(myContactBuilder.buildContact(cursor))
 
-                if (myContactBuilder.count>=50)
+                if (myContactBuilder.count>=30)
                     loading.postValue(false)
             }
         }
         cursor.close()
-//        Log.d("loadarr", "before: ")
-//        Log.d("loadarr", "fetchContacts: SIZE = ${listToAdd.size}")
-//        Log.d("loadarr", "after: ")
-//        listToAdd.sortWith(compareBy { it.name})
-//        contactDao.insertAll(listToAdd)
-
-
 
         with (sharedPref.edit()) {
             putInt("count", myContactBuilder.count)
