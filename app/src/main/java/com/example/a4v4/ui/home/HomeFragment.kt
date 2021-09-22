@@ -1,18 +1,28 @@
 package com.example.a4v4.ui.home
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.a4v4.MainActivity
 import com.example.a4v4.R
 import com.example.a4v4.application.MyApp
 import com.example.a4v4.databinding.FragmentHomeBinding
+import com.example.a4v4.rv.ListAdapter
 import com.example.a4v4.rv.MyRvAdapter
+import com.example.a4v4.utils.PaginationHelper
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
+import android.widget.Toast
+
+
+
 
 
 class HomeFragment : Fragment(R.layout.fragment_home) {
@@ -23,8 +33,8 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
     var _binding                :   FragmentHomeBinding?    =   null
     val binding get()                   =   _binding!!
 
-    private lateinit var recyclerView   :   RecyclerView
-    lateinit var myRvAdapter            :   MyRvAdapter
+    lateinit var recyclerView   :   RecyclerView
+    lateinit var myRvAdapter            :   MyRvAdapter /*ListAdapter*/
 
     /*----------------------  L I F E C Y C L E   C A L L B A C K S ------------------------------*/
 
@@ -57,6 +67,7 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
 
     /*--------------------------------------------------------------------------------------------*/
 
+    private val paginationHelper    =   PaginationHelper(this)
     private fun setUpRv() {
 
         homeViewModel.loading.observe(viewLifecycleOwner){
@@ -64,13 +75,36 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
         }
 
         recyclerView                =   binding.fragmentHomeRv
-        myRvAdapter                 =   MyRvAdapter(this, arrayListOf())
+        myRvAdapter                 =   MyRvAdapter(this, arrayListOf()) /*ListAdapter(this, arrayListOf())*/
         recyclerView.layoutManager  =   LinearLayoutManager(requireContext())
         recyclerView.setHasFixedSize(true)
         recyclerView.adapter        =   myRvAdapter
 
-        homeViewModel.data.observe(viewLifecycleOwner){
-                data    ->  myRvAdapter.updateData(data)
+        recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                super.onScrollStateChanged(recyclerView, newState)
+                if (!recyclerView.canScrollVertically(1)) {
+                    (requireActivity() as MainActivity).handleLoading(true)
+//                    Toast.makeText(requireContext(), "Last", Toast.LENGTH_LONG).show()
+                    myRvAdapter.getPage()
+                    (requireActivity() as MainActivity).handleLoading(false)
+                }
+            }
+        })
+
+        // paging attempt 2
+//        paginationHelper.adapter    =   myRvAdapter
+
+        //  for paging attempt 1
+//        lifecycleScope.launch {
+//            homeViewModel.getPagedItems().collectLatest {
+//                myRvAdapter.submitData(it)
+//            }
+//        }
+
+        homeViewModel.getContacts(0).observe(viewLifecycleOwner){
+                myRvAdapter.updateData(it)
+//            paginationHelper.pageData(it)
         }
     }
 

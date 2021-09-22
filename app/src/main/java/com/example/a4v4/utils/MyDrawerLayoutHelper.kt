@@ -3,13 +3,16 @@ package com.example.a4v4.utils
 import android.app.Application
 import android.content.Context
 import android.graphics.drawable.ColorDrawable
+import android.util.Log
 import android.view.MenuItem
+import android.view.View
 import androidx.appcompat.app.ActionBar
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import com.example.a4v4.MainActivity
 import com.example.a4v4.R
+import com.example.a4v4.application.MyApp
 import com.example.a4v4.database.ContactsModel
 import com.example.a4v4.ui.apps.AppsFragment
 import com.google.android.material.navigation.NavigationView
@@ -19,7 +22,7 @@ class MyDrawerLayoutHelper(
     val drawerLayout                :   DrawerLayout,
     val navigationView              :   NavigationView,
     private val actionBar           :   ActionBar,
-    val application                 :   Application,
+    val application                 :   MyApp,
     private val applicationContext  :   Context,
     private val toolbar             :   Toolbar,
     ){
@@ -27,10 +30,24 @@ class MyDrawerLayoutHelper(
     var selectedTitle   =   "Home"
 
     init {
+        application.repository.allContactsLoaded.observe(mainActivity){
+
+            // it == loaded
+
+            Log.d("allLoaded", "all loaded: : $it ")
+            mainActivity.allContactsLoaded=it
+            if (it)
+                mainActivity.binding.myBgLoader.visibility= View.GONE
+        }
+
         navigationView.itemIconTintList = null;
         navigationView.setNavigationItemSelectedListener {
             it.isChecked = true
             drawerLayout.closeDrawers()
+            mainActivity.homeFragment?.run{
+                myRvAdapter?.resetPages()
+                recyclerView.scrollToPosition(0)
+            }
 
             when (it.itemId) {
                 R.id.nav_home -> {

@@ -136,4 +136,21 @@ class ContactsModel(
         }
         return log
     }
+
+    override fun equals(other: Any?): Boolean {
+        if (other==null || other.javaClass!=this.javaClass)
+            return false
+
+        return (other as ContactsModel).let {
+            name    ==  it.name &&
+                    number  ==  it.number   &&
+                    address ==  it.address  &&
+                    email   ==  it.email    &&
+                    org     ==  it.org      &&
+                    title   ==  it.title    &&
+                    type    ==  it.type     &&
+                    hasImg  ==  it.hasImg   &&
+                    idx     ==  it.idx
+        }
+    }
 }

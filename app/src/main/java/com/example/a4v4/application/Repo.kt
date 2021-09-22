@@ -6,6 +6,8 @@ import android.provider.ContactsContract
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
 import com.example.a4v4.database.ContactsDao
 import com.example.a4v4.database.ContactsModel
 import com.example.a4v4.database.MyFiles
@@ -19,10 +21,11 @@ class Repo(
     private val myFilesDao: MyFilesDao,
     ) {
     /*------------------------------ C O R E    V A R I A B L E S ---------------------------------*/
+    val items   =   Pager(PagingConfig(50, enablePlaceholders = true, maxSize = 200)){contactDao.getPagedContacts()}.flow //  for paging attempt 1
 
     var allContacts             : LiveData<List<ContactsModel>>     =   contactDao.getContacts()
 
-    var selectedContact         = MutableLiveData<ContactsModel?>().apply { value = ContactsModel(-1, "", "",  5, "", "", "", "", false) }
+    var selectedContact         = MutableLiveData<ContactsModel?>().apply { value = null }
 
     private val ufoneContacts   : LiveData<List<ContactsModel>>     =   contactDao.getContacts(ContactsModel.TYPE_UFONE)
     private val telenorContacts : LiveData<List<ContactsModel>>     =   contactDao.getContacts(ContactsModel.TYPE_TELENOR)
@@ -35,6 +38,7 @@ class Repo(
     private val myLogs          =   MutableLiveData<ArrayList<PackageInfo>>().apply { value=ArrayList() }
 
     private val loading         =   MutableLiveData<Boolean>().apply {value=true}
+    val allContactsLoaded       =   MutableLiveData<Boolean>().apply { value=false }
 
     /*------------------------------ C O M M U N I C A T O R S ---------------------------------*/
 
@@ -67,8 +71,6 @@ class Repo(
     suspend fun fetchContacts(){
         loading.postValue(true)
 
-        contactDao.deleteAll()
-
         Log.d("loadarr", " * * * fetchContacts: true ")
 
         val sharedPref = context.getSharedPreferences("contacts", Context.MODE_PRIVATE)
@@ -79,18 +81,23 @@ class Repo(
             null,
             null,
             null,
-            null
+            "UPPER(" + ContactsContract.Contacts.DISPLAY_NAME_PRIMARY + ") ASC"
         )
 
         val currentCount    =   cursor?.count
 
-        if (currentCount==lastCount) {
-            loading.postValue(false)
-            Log.d("loadarr", " * * * fetchContacts: FALSE ")
-            return
-        }
+//        if (currentCount==lastCount) {
+//            loading.postValue(false)
+//            allContactsLoaded.postValue(true)
+//            Log.d("loadarr", " * * * fetchContacts: FALSE ")
+//            return
+//        }
+
+        contactDao.deleteAll()
 
         val myContactBuilder    =   ContactBuilder(context)
+
+        val listToAdd   =   ArrayList<ContactsModel>()
 
         if (cursor?.count!!> 0) {
             var toAdd   : ContactsModel
@@ -98,17 +105,28 @@ class Repo(
                 Log.d("loadarr", "---------")
                 toAdd   =   myContactBuilder.buildContact(cursor)
                 contactDao.insert(toAdd)
+//                listToAdd.add(myContactBuilder.buildContact(cursor))
+
+                if (myContactBuilder.count>=50)
+                    loading.postValue(false)
             }
         }
         cursor.close()
+//        Log.d("loadarr", "before: ")
+//        Log.d("loadarr", "fetchContacts: SIZE = ${listToAdd.size}")
+//        Log.d("loadarr", "after: ")
+//        listToAdd.sortWith(compareBy { it.name})
+//        contactDao.insertAll(listToAdd)
+
+
 
         with (sharedPref.edit()) {
             putInt("count", myContactBuilder.count)
             apply()
         }
-        loading.postValue(false)
         Log.d("loadarr", " * * * fetchContacts: FALSE ")
 
+        allContactsLoaded.postValue(true)
     }
 
 

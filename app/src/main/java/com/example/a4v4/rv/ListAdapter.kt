@@ -2,7 +2,6 @@ package com.example.a4v4.rv
 
 import android.content.Context
 import android.graphics.drawable.BitmapDrawable
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,6 +11,8 @@ import android.widget.Filterable
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.core.content.ContextCompat.getSystemService
+import androidx.paging.PagingDataAdapter
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.example.a4v4.MainActivity
 import com.example.a4v4.R
@@ -20,14 +21,28 @@ import com.example.a4v4.databinding.RvContactLayoutBinding
 import com.example.a4v4.ui.home.HomeFragment
 import com.squareup.picasso.Picasso
 import de.hdodenhof.circleimageview.CircleImageView
-
-class MyRvAdapter(
+//  for paging attempt 1
+class ListAdapter(
     private val fragment    :   HomeFragment,
     private val data        :   ArrayList<ContactsModel>,
     private var dataFiltered:   ArrayList<ContactsModel> =   ArrayList(),
-)   :   RecyclerView.Adapter<MyRvAdapter.MyViewHolder>(), Filterable
+)   :   PagingDataAdapter<ContactsModel, ListAdapter.MyViewHolder>(DIFF_CALLBACK), Filterable
 {
 
+    companion object{
+        private val DIFF_CALLBACK   =   object :    DiffUtil.ItemCallback<ContactsModel>(){
+            override fun areItemsTheSame(oldItem: ContactsModel, newItem: ContactsModel): Boolean {
+                return oldItem.number==newItem.number
+            }
+
+            override fun areContentsTheSame(
+                oldItem: ContactsModel,
+                newItem: ContactsModel
+            ): Boolean {
+                return oldItem  ==  newItem
+            }
+        }
+    }
     /*-------------------------------  V I E W   H O L D E R  ------------------------------------*/
 
     class MyViewHolder(
@@ -72,10 +87,7 @@ class MyRvAdapter(
 
     /*--------------------------------------------------------------------------------------------*/
 
-    var mySize    =   25
-    override fun getItemCount() =   minOf(dataFiltered.size, mySize)
-    fun getPage(){     mySize += 25 ;   notifyDataSetChanged()  }
-    fun resetPages(){mySize =   25  ;   notifyDataSetChanged()  }
+    override fun getItemCount() =   dataFiltered.size
 
     /*-------------------------  C O N V E N I E N C E   M E T H O D  ----------------------------*/
 
@@ -91,14 +103,6 @@ class MyRvAdapter(
             data.addAll(updData)
             dataFiltered.addAll(updData)
         }
-        notifyDataSetChanged()
-    }
-
-    fun addData(updData  :   List<ContactsModel>) {
-        Log.d("pagedata", "addData: sz ${updData.size} ")
-        fragment.binding.emptyRvTxt.visibility = View.GONE
-        data.addAll(updData)
-        dataFiltered.addAll(updData)
         notifyDataSetChanged()
     }
 

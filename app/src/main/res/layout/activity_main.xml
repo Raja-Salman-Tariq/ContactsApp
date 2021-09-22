@@ -56,6 +56,15 @@
             app:collapseIcon="@drawable/toolbar_menu_more"
             />
 
+        <com.google.android.material.progressindicator.LinearProgressIndicator
+            android:id="@+id/myBgLoader"
+            android:elevation="50dp"
+            android:indeterminate="true"
+            app:trackColor="@color/blue"
+            app:showAnimationBehavior="none"
+            app:indicatorColor="@color/black_alt"
+            android:layout_width="match_parent"
+            android:layout_height="7dp" />
     </com.google.android.material.appbar.AppBarLayout>
 
     <FrameLayout

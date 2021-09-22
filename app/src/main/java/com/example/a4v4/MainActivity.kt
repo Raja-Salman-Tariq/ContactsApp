@@ -37,6 +37,7 @@ class MainActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
     lateinit var    callLogsFragment    :   CallLogsFragment
 
     lateinit var    myDrawer            :   MyDrawerLayoutHelper
+    var             allContactsLoaded   :   Boolean         =   false
     private lateinit var menu: Menu
 
     /*============================================================================================*/
@@ -63,7 +64,7 @@ class MainActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
             binding.drawerLayout,
             binding.drawerNav,
             supportActionBar!!,
-            application,
+            application as MyApp,
             applicationContext,
             binding.toolbar
         )
@@ -146,12 +147,25 @@ class MainActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
             }
             R.id.home   ->  {
                 if (homeFragment?.isVisible!!) {
-                    myDrawer.drawerLayout.openDrawer(GravityCompat.START)
-                    (getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager)
-                        ?.hideSoftInputFromWindow(
-                            findViewById<ViewGroup>(android.R.id.content).rootView.windowToken,
-                            0
-                        )
+//                    Log.d("allLoaded", "onOptionsItemSelected: ")
+//                    if (allContactsLoaded) {
+//                        myDrawer.drawerLayout.openDrawer(GravityCompat.START)
+//                        (getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager)
+//                            ?.hideSoftInputFromWindow(
+//                                findViewById<ViewGroup>(android.R.id.content).rootView.windowToken,
+//                                0
+//                            )
+//                    }
+//                    else{
+//                        Snackbar
+//                            .make(
+//                                binding.root,
+//                                "Please wait while all contacts are imported.",
+//                                Snackbar.LENGTH_INDEFINITE
+//                            )
+//                            .setAction("Close App"){}
+//                            .show()
+//                    }
                 }
                 else if (callLogsFragment?.isVisible!!){
                     setActionBarTitle("Details")
@@ -205,7 +219,7 @@ class MainActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
             detailsFragment.isVisible -> {
                 supportFragmentManager.popBackStack()
             }
-            homeFragment?.isResumed!! -> {
+            homeFragment?.isResumed!! && !myDrawer.drawerLayout.isDrawerOpen(GravityCompat.START)-> {
                 Log.d("onsportnav", "onSupportNavigateUp: by home")
                 myDrawer.drawerLayout.openDrawer(GravityCompat.START)
                 (getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager)
@@ -235,13 +249,25 @@ class MainActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
                 supportFragmentManager.popBackStack()
             }
             homeFragment?.isResumed!! -> {
-                Log.d("onsportnav", "onSupportNavigateUp: by home")
-                myDrawer.drawerLayout.openDrawer(GravityCompat.START)
-                (getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager)
-                    ?.hideSoftInputFromWindow(
-                        findViewById<ViewGroup>(android.R.id.content).rootView.windowToken,
-                        0
-                    )
+                if (allContactsLoaded) {
+                    Log.d("onsportnav", "onSupportNavigateUp: by home")
+                    myDrawer.drawerLayout.openDrawer(GravityCompat.START)
+                    (getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager)
+                        ?.hideSoftInputFromWindow(
+                            findViewById<ViewGroup>(android.R.id.content).rootView.windowToken,
+                            0
+                        )
+                }
+                else{
+                    Snackbar
+                        .make(
+                            binding.root,
+                            "Please wait while all contacts are imported.",
+                            Snackbar.LENGTH_INDEFINITE
+                        )
+                        .setAction("OK"){}
+                        .show()
+                }
             }
             else    ->  {
                 Log.d("onoptionselect", "onSupportNavigateUp: ")
@@ -314,6 +340,7 @@ class MainActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
                 ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CONTACTS) ==  PackageManager.PERMISSION_GRANTED) {
                 (application as MyApp).initRepo()
                 homeFragment = HomeFragment()
+                callLogsFragment = CallLogsFragment((application as com.example.a4v4.application.MyApp).repository.getSelectedContact())
                 supportFragmentManager.beginTransaction().apply {
                     replace(R.id.frag_container, homeFragment!!)
                     commit()

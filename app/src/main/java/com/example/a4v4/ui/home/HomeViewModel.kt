@@ -29,6 +29,8 @@ class HomeViewModel(val repo: Repo) : ViewModel() {
         return data
     }
 
+    fun getPagedItems() =   repo.items //  for paging attempt 1
+
 }
 
     /*--------------------------------------------------------------------------------------------*/
