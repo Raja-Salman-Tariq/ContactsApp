@@ -119,6 +119,7 @@ class Repo(
         }
         Log.d("loadarr", " * * * fetchContacts: FALSE ")
 
+        loading.postValue(false)
         allContactsLoaded.postValue(true)
     }
 
@@ -129,23 +130,6 @@ class Repo(
 
         val arrayOfAppInfo =
             context.packageManager.getInstalledPackages(0)
-
-//        for (app in arrayOfAppInfo)
-//            when {
-//                app.applicationInfo.flags!=null && ApplicationInfo.FLAG_UPDATED_SYSTEM_APP !== 0 -> {
-//                    myApps.add(app)
-//                }
-//                app.applicationInfo.flags!=null && ApplicationInfo.FLAG_SYSTEM !== 0 -> {
-//                    //Discard
-//                }
-//                else -> {
-////                    myApps.add(app)
-//                }
-//            }
-
-//        for (app   in  arrayOfAppInfo)
-//            if (!(app.applicationInfo.flags!=null && ApplicationInfo.FLAG_SYSTEM!=null))
-//                myApps.add(app)
 
         arrayOfAppInfo.sortWith(compareBy { it.applicationInfo.loadLabel(context.packageManager).toString()})
         myApps.postValue(arrayOfAppInfo as ArrayList<PackageInfo>)

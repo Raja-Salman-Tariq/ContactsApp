@@ -17,7 +17,7 @@
         android:textColor="@color/black_alt"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="No relevant entries available to show"/>
+        android:text="No relevant entries available to show at the moment"/>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/fragment_apps_rv"

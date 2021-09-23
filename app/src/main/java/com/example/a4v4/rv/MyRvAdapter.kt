@@ -48,7 +48,7 @@ class MyRvAdapter(
 
         return MyViewHolder(binding).apply {
             itemView.setOnClickListener {
-                fragment.homeViewModel.repo.selectedContact.postValue(dataFiltered[adapterPosition])
+                fragment.homeViewModel.repo.selectedContact.postValue(dataFiltered[absoluteAdapterPosition])
                 (fragment.requireActivity() as MainActivity).run {
                     openDetailsFragment()
                     (getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager)

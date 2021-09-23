@@ -2,27 +2,16 @@ package com.example.a4v4.ui.home
 
 import android.os.Bundle
 import android.util.Log
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.a4v4.MainActivity
 import com.example.a4v4.R
 import com.example.a4v4.application.MyApp
 import com.example.a4v4.databinding.FragmentHomeBinding
-import com.example.a4v4.rv.ListAdapter
 import com.example.a4v4.rv.MyRvAdapter
-import com.example.a4v4.utils.PaginationHelper
-import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.launch
-import android.widget.Toast
-
-
-
 
 
 class HomeFragment : Fragment(R.layout.fragment_home) {
@@ -38,6 +27,11 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
 
     /*----------------------  L I F E C Y C L E   C A L L B A C K S ------------------------------*/
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setHasOptionsMenu(true)
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -45,6 +39,11 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
     ): View {
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
         val root: View = binding.root
+
+        homeViewModel.repo?.allContactsLoaded.observe(viewLifecycleOwner){
+            requireActivity().invalidateOptionsMenu()
+            Log.d("invalidatingopsmen", "onCreateView: $it")
+        }
 
         setUpRv()
 
@@ -67,7 +66,16 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
 
     /*--------------------------------------------------------------------------------------------*/
 
-    private val paginationHelper    =   PaginationHelper(this)
+    // set up toolbar
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+
+        menu.findItem(R.id.menu_search)?.isVisible =   homeViewModel.repo.allContactsLoaded.value!!
+
+        super.onCreateOptionsMenu(menu, inflater)
+    }
+
+    /*--------------------------------------------------------------------------------------------*/
+
     private fun setUpRv() {
 
         homeViewModel.loading.observe(viewLifecycleOwner){

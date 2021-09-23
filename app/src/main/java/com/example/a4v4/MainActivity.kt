@@ -3,7 +3,6 @@ package com.example.a4v4
 import android.Manifest
 import android.content.Context
 import android.content.pm.PackageManager
-import android.os.Binder
 import android.os.Bundle
 import android.util.Log
 import android.view.*
@@ -25,8 +24,6 @@ import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import androidx.core.view.MenuItemCompat
-import com.example.a4v4.ui.AuthFragment
 
 
 class MainActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
@@ -48,7 +45,6 @@ class MainActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        getPermission(this)
 
         binding.toolbar.apply {
             overflowIcon = ContextCompat.getDrawable(
@@ -59,16 +55,7 @@ class MainActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
 
         setSupportActionBar(binding.toolbar)
 
-
-        myDrawer  = MyDrawerLayoutHelper(
-            this,
-            binding.drawerLayout,
-            binding.drawerNav,
-            supportActionBar!!,
-            application as MyApp,
-            applicationContext,
-            binding.toolbar
-        )
+        getPermission(this)
 
 //        handleLoading(false)
 //        supportFragmentManager.beginTransaction()
@@ -130,6 +117,16 @@ class MainActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
                 if (!p1)// not have focus
                     isIconified =   true
             }
+
+            var visibility  = true
+            if (homeFragment==null)
+                visibility=false
+
+            menu.findItem(R.id.menu_search).isVisible = visibility
+            menu.findItem(R.id.export).isVisible = visibility
+            menu.findItem(R.id.history).isVisible = visibility
+            menu.findItem(R.id.calllog).isVisible = false
+
         }
         return true
     }
@@ -225,7 +222,10 @@ class MainActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
             detailsFragment.isVisible -> {
                 supportFragmentManager.popBackStack()
             }
-            homeFragment?.isResumed!! && !myDrawer.drawerLayout.isDrawerOpen(GravityCompat.START)-> {
+            homeFragment?.isResumed!!
+                    && !myDrawer.drawerLayout.isDrawerOpen(GravityCompat.START)
+                    && (application as MyApp).repository.allContactsLoaded.value!!
+            -> {
                 Log.d("onsportnav", "onSupportNavigateUp: by home")
                 myDrawer.drawerLayout.openDrawer(GravityCompat.START)
                 (getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager)
@@ -301,7 +301,6 @@ class MainActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
         val grant = ContextCompat.checkSelfPermission(mainActivity, permission)
         val grant2= ContextCompat.checkSelfPermission(mainActivity, Manifest.permission.READ_CALL_LOG)
         if (grant == PackageManager.PERMISSION_GRANTED && grant2 == PackageManager.PERMISSION_GRANTED ) {
-            (application as MyApp).initRepo()
             startMainApp()
         }
         else{
@@ -330,13 +329,27 @@ class MainActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
         }
     }
 
-    fun startMainApp(){
+    private fun startMainApp(){
+        (application as MyApp).initRepo()
+
         homeFragment = HomeFragment()
         callLogsFragment = CallLogsFragment((application as com.example.a4v4.application.MyApp).repository.getSelectedContact())
         supportFragmentManager.beginTransaction().apply {
             replace(R.id.frag_container, homeFragment!!)
             commit()
         }
+
+        invalidateOptionsMenu()
+
+        myDrawer  = MyDrawerLayoutHelper(
+            this,
+            binding.drawerLayout,
+            binding.drawerNav,
+            supportActionBar!!,
+            application as MyApp,
+            applicationContext,
+            binding.toolbar
+        )
     }
 
     override fun onRequestPermissionsResult(
@@ -348,7 +361,6 @@ class MainActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
             if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CALL_LOG) == PackageManager.PERMISSION_GRANTED
                 &&
                 ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CONTACTS) ==  PackageManager.PERMISSION_GRANTED) {
-                (application as MyApp).initRepo()
                 startMainApp()
             }
             else {
