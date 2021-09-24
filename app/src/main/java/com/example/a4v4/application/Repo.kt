@@ -21,8 +21,6 @@ class Repo(
     private val myFilesDao: MyFilesDao,
     ) {
     /*------------------------------ C O R E    V A R I A B L E S ---------------------------------*/
-    val items   =   Pager(PagingConfig(50, enablePlaceholders = true, maxSize = 200)){contactDao.getPagedContacts()}.flow //  for paging attempt 1
-
     var allContacts             : LiveData<List<ContactsModel>>     =   contactDao.getContacts()
 
     var selectedContact         = MutableLiveData<ContactsModel?>().apply { value = null }
@@ -71,8 +69,6 @@ class Repo(
     suspend fun fetchContacts(){
         loading.postValue(true)
 
-        Log.d("loadarr", " * * * fetchContacts: true ")
-
         val sharedPref = context.getSharedPreferences("contacts", Context.MODE_PRIVATE)
         val lastCount       =   sharedPref.getInt("count", -1)
 
@@ -97,15 +93,12 @@ class Repo(
 
         val myContactBuilder    =   ContactBuilder(context)
 
-        val listToAdd   =   ArrayList<ContactsModel>()
-
         if (cursor?.count!!> 0) {
             var toAdd   : ContactsModel
             while (cursor.moveToNext()) {
                 Log.d("loadarr", "---------")
                 toAdd   =   myContactBuilder.buildContact(cursor)
                 contactDao.insert(toAdd)
-//                listToAdd.add(myContactBuilder.buildContact(cursor))
 
                 if (myContactBuilder.count>=30)
                     loading.postValue(false)
@@ -122,7 +115,6 @@ class Repo(
         loading.postValue(false)
         allContactsLoaded.postValue(true)
     }
-
 
     fun fetchApps() {
 
