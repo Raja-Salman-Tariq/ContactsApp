@@ -26,4 +26,14 @@
         android:visible="false"
         android:icon="@drawable/call_log_icon"/>
 
+    <item
+        android:id="@+id/backup"
+        android:title="Backup To Drive"
+        app:showAsAction="collapseActionView" />
+
+    <item
+        android:id="@+id/logout"
+        android:title="Log Out"
+        app:showAsAction="collapseActionView" />
+
 </menu>

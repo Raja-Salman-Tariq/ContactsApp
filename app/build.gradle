@@ -71,4 +71,8 @@ dependencies {
 
     def paging_version = "3.0.1"
     implementation "androidx.paging:paging-runtime:$paging_version"
+
+    implementation 'com.google.firebase:firebase-auth:19.4.0'
+    implementation 'com.google.android.gms:play-services-auth:18.1.0'
+    implementation("com.android.volley:volley:1.2.1")
 }

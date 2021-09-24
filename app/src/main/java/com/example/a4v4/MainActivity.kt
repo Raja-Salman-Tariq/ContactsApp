@@ -19,6 +19,7 @@ import com.example.a4v4.ui.details.DetailsFragment
 import com.example.a4v4.ui.files.FilesFragment
 import com.example.a4v4.ui.home.HomeFragment
 import com.example.a4v4.utils.FileHandler
+import com.example.a4v4.utils.GoogleSignInHelper
 import com.example.a4v4.utils.MyDrawerLayoutHelper
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.CoroutineScope
@@ -37,6 +38,8 @@ class MainActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
     lateinit var    myDrawer            :   MyDrawerLayoutHelper
     var             allContactsLoaded   :   Boolean         =   false
     private lateinit var menu: Menu
+
+    private val     signInHelper        =   GoogleSignInHelper(this)
 
     /*============================================================================================*/
 
@@ -126,6 +129,8 @@ class MainActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
             menu.findItem(R.id.export).isVisible = visibility
             menu.findItem(R.id.history).isVisible = visibility
             menu.findItem(R.id.calllog).isVisible = false
+            menu.findItem(R.id.logout).isVisible = visibility
+            menu.findItem(R.id.backup).isVisible = visibility
 
         }
         return true
@@ -200,6 +205,14 @@ class MainActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
                 (getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager)
                     ?.hideSoftInputFromWindow(findViewById<ViewGroup>(android.R.id.content).rootView.windowToken, 0)
                 return true
+            }
+            R.id.backup ->  {
+                signInHelper.backUp()
+                true
+            }
+            R.id.logout ->  {
+                signInHelper.logOut()
+                true
             }
             else    -> super.onOptionsItemSelected(item)
         }

@@ -136,8 +136,4 @@ class Repo(
 
         loading.postValue(false)
     }
-
-    fun fetchLogs() {
-        TODO("Not yet implemented")
-    }
 }

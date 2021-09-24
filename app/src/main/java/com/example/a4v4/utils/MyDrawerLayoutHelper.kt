@@ -30,14 +30,16 @@ class MyDrawerLayoutHelper(
     var selectedTitle   =   "Home"
 
     init {
+        drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
         application.repository.allContactsLoaded.observe(mainActivity){
 
             // it == loaded
 
             Log.d("allLoaded", "all loaded: : $it ")
             mainActivity.allContactsLoaded=it
-            if (it)
-                mainActivity.binding.myBgLoader.visibility= View.GONE
+            if (it) {
+                mainActivity.binding.myBgLoader.visibility = View.GONE
+            }
         }
 
         navigationView.itemIconTintList = null;
