@@ -8,6 +8,7 @@ This app is an experimental app with the following features:
 - Content Provider classes and schemas used to access phone Contacts, Call Logs, Storage, Installed Applications
 - File sharing using Share Sheet to share files in various apps
 - SearchView widget, extensive searching and filtering, pagination (Using Paging Library as well as manual attempt based off LiveData), sorting.
+- App Data BackUp - Google Drive, Local Storage, Local Database
 
 
 
