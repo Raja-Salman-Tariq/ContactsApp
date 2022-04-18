@@ -40,7 +40,7 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
-        homeViewModel.repo?.allContactsLoaded.observe(viewLifecycleOwner){
+        homeViewModel.repo.allContactsLoaded.observe(viewLifecycleOwner){
             requireActivity().invalidateOptionsMenu()
             Log.d("invalidatingopsmen", "onCreateView: $it")
         }
@@ -93,26 +93,15 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
                 super.onScrollStateChanged(recyclerView, newState)
                 if (!recyclerView.canScrollVertically(1)) {
                     (requireActivity() as MainActivity).handleLoading(true)
-//                    Toast.makeText(requireContext(), "Last", Toast.LENGTH_LONG).show()
+
                     myRvAdapter.getPage()
                     (requireActivity() as MainActivity).handleLoading(false)
                 }
             }
         })
 
-        // paging attempt 2
-//        paginationHelper.adapter    =   myRvAdapter
-
-        //  for paging attempt 1
-//        lifecycleScope.launch {
-//            homeViewModel.getPagedItems().collectLatest {
-//                myRvAdapter.submitData(it)
-//            }
-//        }
-
         homeViewModel.getContacts(0).observe(viewLifecycleOwner){
                 myRvAdapter.updateData(it)
-//            paginationHelper.pageData(it)
         }
     }
 

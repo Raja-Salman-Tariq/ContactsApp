@@ -27,7 +27,7 @@ class FileHandler(private val ctxt: Context) {
     }
 
     /*--------------------------------------------------------------------------------------------*/
-
+    // "static" stream object to ensure that stream is closed when app is terminating by calling fos.close()
     companion object{
         private const val FILE_NAME    =   "contacts"
 
@@ -45,7 +45,7 @@ class FileHandler(private val ctxt: Context) {
     }
 
     /*--------------------------------------------------------------------------------------------*/
-
+    // function to generate contacts csv; called when user selects export option
     fun createCSV(contacts : List<ContactsModel>?): FileHandler {
 
         if (contacts == null) {

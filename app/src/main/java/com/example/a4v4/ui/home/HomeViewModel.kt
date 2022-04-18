@@ -28,9 +28,6 @@ class HomeViewModel(val repo: Repo) : ViewModel() {
         data    =   repo.getContacts(type)
         return data
     }
-
-    fun getPagedItems() =   repo.items //  for paging attempt 1
-
 }
 
     /*--------------------------------------------------------------------------------------------*/

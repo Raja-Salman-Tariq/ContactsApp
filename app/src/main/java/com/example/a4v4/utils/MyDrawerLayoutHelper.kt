@@ -6,6 +6,7 @@ import android.graphics.drawable.ColorDrawable
 import android.util.Log
 import android.view.MenuItem
 import android.view.View
+import android.widget.TextView
 import androidx.appcompat.app.ActionBar
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
@@ -16,6 +17,8 @@ import com.example.a4v4.application.MyApp
 import com.example.a4v4.database.ContactsModel
 import com.example.a4v4.ui.apps.AppsFragment
 import com.google.android.material.navigation.NavigationView
+import com.google.android.material.snackbar.BaseTransientBottomBar.LENGTH_INDEFINITE
+import com.google.android.material.snackbar.Snackbar
 
 class MyDrawerLayoutHelper(
     private val mainActivity        : MainActivity,
@@ -40,6 +43,18 @@ class MyDrawerLayoutHelper(
             if (it) {
                 mainActivity.binding.myBgLoader.visibility = View.GONE
             }
+            else
+                Snackbar.make(mainActivity.binding.root,
+                "Some functionality such as searching will be available after all contacts " +
+                        "have been imported. This loading is only needed once when either the app is" +
+                        " installed, or new data has been found.",
+                LENGTH_INDEFINITE).apply {
+                    view.findViewById<TextView>(com.google.android.material.R.id.snackbar_text)
+                        .maxLines = 5
+                    setAction("OK") {}
+                    show()
+                }
+
         }
 
         navigationView.itemIconTintList = null;

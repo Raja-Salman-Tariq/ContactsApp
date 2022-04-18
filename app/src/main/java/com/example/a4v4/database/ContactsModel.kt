@@ -33,38 +33,11 @@ class ContactsModel(
 
     /*------------------------------ C O N S T R U C T  I O N ---------------------------------*/
 
-    constructor(
-        idx: Long?,
-        name: String?,
-        number: String?,
-        type: Short?,
-        email: String?,
-        address: String?,
-        org: String?,
-        title: String?,
-        hasImg: Boolean?
-    ): this(
-        getVal(idx),
-        getVal(name),
-        getVal(number),
-        getVal(type),
-        getVal(email),
-        getVal(address),
-        getVal(org),
-        getVal(title),
-        hasImg?:false
-    )
-
-
-    init {
-
-        name    = getVal(name)
-        number  = getVal(number)
-        email   =   getVal(email)
-        address =   getVal(address)
-        org     =   getVal(org)
-        title   =   getVal(title)
-    }
+    // Secondary constructor; accepts any null values
+    constructor(idx: Long?, name: String?,number: String?,type: Short?,email: String?,
+                address: String?,org: String?,title: String?,hasImg: Boolean?):
+            this(getVal(idx),getVal(name),getVal(number),getVal(type),getVal(email),getVal(address),
+                getVal(org),getVal(title),hasImg?:false)
 
     /*---------------------- " S T A T I C   F U N C T I O N A L I T Y  "-------------------------*/
 
@@ -93,6 +66,7 @@ class ContactsModel(
             ?:
             Uri.parse("android.resource://com.example.a4v4/drawable/image_name")
 
+    // get call logs for this current contact
     fun fetchCallLog(context: Context): ArrayList<CallLogEntry> {
         val contact: Cursor = context.contentResolver.query(
             ContactsContract.Contacts.CONTENT_URI,
@@ -121,36 +95,8 @@ class ContactsModel(
                     calls.getString(calls.getColumnIndexOrThrow(CallLog.Calls.DURATION)),
                     Date(calls.getString(calls.getColumnIndexOrThrow(CallLog.Calls.DATE)).toLong()).toString()
                 ))
-//                Log.d(
-//                    "tmp",
-//                    "type: " + calls.getString(calls.getColumnIndex(CallLog.Calls.TYPE))
-//                        .toString() + ", number: " + calls.getString(calls.getColumnIndex(CallLog.Calls.NUMBER))
-//                        .toString() + ", " + "cached_name: " + calls.getString(
-//                        calls.getColumnIndexOrThrow(
-//                            CallLog.Calls.CACHED_NAME
-//                        )
-//                    )
-//                        .toString() + ", " + "date: " + calls.getString(calls.getColumnIndex(CallLog.Calls.DATE))
-//                )
             }
         }
         return log
-    }
-
-    override fun equals(other: Any?): Boolean {
-        if (other==null || other.javaClass!=this.javaClass)
-            return false
-
-        return (other as ContactsModel).let {
-            name    ==  it.name &&
-                    number  ==  it.number   &&
-                    address ==  it.address  &&
-                    email   ==  it.email    &&
-                    org     ==  it.org      &&
-                    title   ==  it.title    &&
-                    type    ==  it.type     &&
-                    hasImg  ==  it.hasImg   &&
-                    idx     ==  it.idx
-        }
     }
 }

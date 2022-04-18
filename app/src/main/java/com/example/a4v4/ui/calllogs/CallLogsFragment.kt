@@ -17,10 +17,6 @@ import com.example.a4v4.rv.MyCallLogsRvAdapter
 
 class CallLogsFragment(val contact  : LiveData<ContactsModel?>) : Fragment(R.layout.fragment_home) {
 
-    private val appsViewModel           :       CallLogsViewModel           by  viewModels{
-    MyViewModelFactory((this.requireActivity().application as MyApp).repository)
-    }
-
     private var _binding                :       FragmentCallLogsBinding?    =   null
     val binding get()                   =       _binding!!
 

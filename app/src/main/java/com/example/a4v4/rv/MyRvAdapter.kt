@@ -94,14 +94,6 @@ class MyRvAdapter(
         notifyDataSetChanged()
     }
 
-    fun addData(updData  :   List<ContactsModel>) {
-        Log.d("pagedata", "addData: sz ${updData.size} ")
-        fragment.binding.emptyRvTxt.visibility = View.GONE
-        data.addAll(updData)
-        dataFiltered.addAll(updData)
-        notifyDataSetChanged()
-    }
-
     /*--------------------  F I L T R A T  I O N    O V E R R I D E S ----------------------------*/
 
     override fun getFilter(): Filter {

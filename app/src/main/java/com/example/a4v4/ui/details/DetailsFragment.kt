@@ -43,7 +43,7 @@ class DetailsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        contact     =   (requireActivity().application as MyApp).repository.selectedContact?.value!!
+        contact     =   (requireActivity().application as MyApp).repository.selectedContact.value!!
 
         img         =   binding.fragDetailsImg
         nameText    =   binding.fragDetailsNameText
@@ -54,7 +54,6 @@ class DetailsFragment : Fragment() {
         jobtitle    =   binding.fragDetailsJobTitleText
 
 
-//        contact.retrieveContactPhoto(requireContext()).let { if (it!=null) img.setImageBitmap(it) }
         Picasso.get().load(contact.getImgUri()).placeholder(R.drawable.icon_place_holder).into(img)
         nameText.text   =   contact.name
         contactText.text=   contact.number

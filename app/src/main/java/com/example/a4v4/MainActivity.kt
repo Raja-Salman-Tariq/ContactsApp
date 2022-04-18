@@ -59,11 +59,6 @@ class MainActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
         setSupportActionBar(binding.toolbar)
 
         getPermission(this)
-
-//        handleLoading(false)
-//        supportFragmentManager.beginTransaction()
-//            .replace(R.id.frag_container, AuthFragment())
-//            .commit()
     }
 
     fun handleLoading(isLoading :   Boolean){
@@ -154,28 +149,7 @@ class MainActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
                 true
             }
             R.id.home   ->  {
-                if (homeFragment?.isVisible!!) {
-//                    Log.d("allLoaded", "onOptionsItemSelected: ")
-//                    if (allContactsLoaded) {
-//                        myDrawer.drawerLayout.openDrawer(GravityCompat.START)
-//                        (getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager)
-//                            ?.hideSoftInputFromWindow(
-//                                findViewById<ViewGroup>(android.R.id.content).rootView.windowToken,
-//                                0
-//                            )
-//                    }
-//                    else{
-//                        Snackbar
-//                            .make(
-//                                binding.root,
-//                                "Please wait while all contacts are imported.",
-//                                Snackbar.LENGTH_INDEFINITE
-//                            )
-//                            .setAction("Close App"){}
-//                            .show()
-//                    }
-                }
-                else if (callLogsFragment?.isVisible!!){
+                if (callLogsFragment?.isVisible!!){
                     setActionBarTitle("Details")
                     supportFragmentManager.beginTransaction().apply {
                         replace(R.id.frag_container, detailsFragment)
@@ -197,7 +171,6 @@ class MainActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
             }
             R.id.calllog    ->  {
                 setActionBarTitle("Call Log")
-//                callLogsFragment = CallLogsFragment((application as MyApp).repository.selectedContact!!)
                 supportFragmentManager.beginTransaction().apply {
                     replace(R.id.frag_container, callLogsFragment)
                     commit()
@@ -311,8 +284,9 @@ class MainActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
     ==============================================================================================*/
     private fun getPermission(mainActivity: MainActivity){
         val permission: String = Manifest.permission.READ_CONTACTS
-        val grant = ContextCompat.checkSelfPermission(mainActivity, permission)
+        val grant = ContextCompat.checkSelfPermission(mainActivity, Manifest.permission.READ_CONTACTS)
         val grant2= ContextCompat.checkSelfPermission(mainActivity, Manifest.permission.READ_CALL_LOG)
+        Log.d("abc", "newbug grant=$grant, grant2=$grant2");
         if (grant == PackageManager.PERMISSION_GRANTED && grant2 == PackageManager.PERMISSION_GRANTED ) {
             startMainApp()
         }
@@ -323,7 +297,7 @@ class MainActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
 
             if (grant == grant2  && grant != PackageManager.PERMISSION_GRANTED) {
                 permissionList = arrayOfNulls<String>(2)
-                permissionList[0] = permission
+                permissionList[0] = Manifest.permission.READ_CONTACTS
                 permissionList[1] = Manifest.permission.READ_CALL_LOG
             }
 

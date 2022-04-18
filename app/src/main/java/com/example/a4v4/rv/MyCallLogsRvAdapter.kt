@@ -43,7 +43,6 @@ class MyCallLogsRvAdapter(
         val myData              =   data[position]
         holder.date.text        =   myData.date
         holder.dur.text        =   myData.dur+" sec"
-//        holder.img.setImageDrawable(myData.applicationInfo.loadIcon(fragment.requireContext().packageManager))
 
         val myImg   =  when (myData.type.toInt()) {
             CallLog.Calls.MISSED_TYPE -> {
@@ -53,7 +52,6 @@ class MyCallLogsRvAdapter(
                 R.drawable.ok_call_ic
             }
         }
-//        Picasso.get().load(R.drawable.missed_call_ic).into(holder.img)
         holder.img.setImageDrawable(fragment.requireContext().getDrawable(myImg))
         holder.img.scaleY       =   0.75f
         holder.img.scaleX       =   0.75f
