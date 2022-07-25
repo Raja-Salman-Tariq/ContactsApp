@@ -1,4 +1,4 @@
-# ContactsAppv2
+# PhoneSummarizer - Access different types of data on your phone.
 
 Objective of this app is to read various content provided by apps including the App Manager, Contacts, and Phone apps. The app sorts and filters numbers alphabetically according to network provider codes. It involves formatting and reformatting of phone numbers for proper cataloguing. The app maintains its own table of information as well which then checks against the phone's local data to determine whether a refresh is needed to cater to stale data. The Phone numbers can be shared to other apps and can also be backed on to Google Drive (google drive integrated).
 
